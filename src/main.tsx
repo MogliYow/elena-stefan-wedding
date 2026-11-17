@@ -6,7 +6,7 @@ import './styles.css';
 import {KineticText, useDepthMotion} from './DepthExperience';
 import './depth.css';
 
-const GoldScene=lazy(()=>import('./GoldScene'));
+const CinematicIntro=lazy(()=>import('./CinematicIntro'));
 
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -22,49 +22,18 @@ function Sprig({className=''}:{className?:string}) {
 }
 function App(){
   const [opened,setOpened]=useState(false);
-  const [opening,setOpening]=useState(false);
   const [motion,setMotion]=useState(()=>!reduced());
   useDepthMotion(opened,motion);
   useEffect(()=>{const query=window.matchMedia('(prefers-reduced-motion: reduce)');const change=()=>setMotion(!query.matches);query.addEventListener('change',change);return()=>query.removeEventListener('change',change);},[]);
-  const intro=useRef<HTMLDivElement>(null);
-  const timeline=useRef<gsap.core.Timeline|null>(null);
-  const open = (skip=false)=>{
-    if(opening||opened)return;
-    setOpening(true);
-    const finish=()=>{setOpened(true);setOpening(false);requestAnimationFrame(()=>{document.getElementById('names')?.focus();window.scrollTo(0,0);});};
-    if(skip||!motion||reduced()){finish();return;}
-    timeline.current=gsap.timeline({onComplete:finish})
-      .to('.wax-seal',{y:24,scale:.9,opacity:0,duration:.45,ease:'power2.in'})
-      .to('.envelope-flap',{rotationX:-180,duration:1.05,ease:'power2.inOut'},.32)
-      .set('.envelope-flap',{zIndex:1},.86)
-      .to('.invitation-letter',{yPercent:-57,duration:1.1,ease:'power3.inOut'},1)
-      .to('.intro-caption',{opacity:0,y:12,duration:.5},1.15)
-      .to('.envelope-stage',{y:95,scale:1.04,duration:1.1,ease:'power2.inOut'},1.4)
-      .to(intro.current,{opacity:0,duration:.9,ease:'power2.inOut'},2.25);
-  };
+  const finishIntro=()=>{setOpened(true);requestAnimationFrame(()=>{document.getElementById('names')?.focus();window.scrollTo(0,0);});};
   useEffect(()=>{document.body.style.overflow=opened?'':'hidden';return()=>{document.body.style.overflow='';};},[opened]);
-  useEffect(()=>()=>{timeline.current?.kill();},[]);
   useEffect(()=>{
     const observer=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('in-scene',e.isIntersecting)),{rootMargin:'100px'});
     document.querySelectorAll('main > section').forEach(el=>observer.observe(el));
     return()=>observer.disconnect();
   },[]);
   return <div className={motion?'experience motion-enabled':'experience motion-paused'}>
-    {opened&&motion&&<Suspense fallback={null}><GoldScene active/></Suspense>}
-    {!opened&&<div className="intro" ref={intro} role="dialog" aria-modal="true" aria-label="Отворете ја свадбената покана">
-      <div className="intro-halo"/>
-      <header className="intro-top"><span className="eyebrow">За еден незаборавен ден</span><button className="text-button" onClick={()=>open(true)} disabled={opening}>Прескокни го воведот ↗</button></header>
-      <div className="envelope-stage"><Sprig className="intro-sprig intro-sprig-left"/><Sprig className="intro-sprig intro-sprig-right"/>
-        <div className="envelope">
-          <div className="envelope-back"/>
-          <div className="invitation-letter"><span className="letter-monogram">{data.monogram}</span><span className="eyebrow">Со љубов ве покануваме</span><div className="letter-names">Елена & Стефан</div><span className="letter-rule"/><p>Некои приказни се пишуваат со срце.<br/>Нашата продолжува со вас.</p><span className="letter-date">{data.dateLabel} · Скопје</span></div>
-          <div className="envelope-front"><div className="envelope-address"><span>За вас, со љубов</span><small>Една покана. Илјада емоции.</small></div></div>
-          <div className="envelope-flap"><div className="flap-face flap-front"><span>E · S</span></div><div className="flap-face flap-back"/></div>
-          <button className="wax-seal" onClick={()=>open()} disabled={opening} aria-label="Отвори ја поканата"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M32 76C9 56 17 28 37 19M68 76C91 56 83 28 63 19M24 61L15 55M23 50L14 42M25 38L20 29M29 29L29 20M76 61L85 55M77 50L86 42M75 38L80 29M71 29L71 20"/></svg><span>{data.monogram}</span></button>
-        </div>
-      </div>
-      <footer className="intro-bottom intro-caption"><p className="intro-couple">Елена & Стефан</p><p className="eyebrow">{opening?'Една љубовна приказна се отвора…':'Допрете го печатот за да ја отворите поканата'}</p><span className="intro-line"/></footer>
-    </div>}
+    {!opened&&<Suspense fallback={<div className="cinema-intro"><div className="cinema-footer"><p>За вас, со љубов</p><button onClick={finishIntro}>Прескокни го воведот ↗</button></div></div>}><CinematicIntro motion={motion} onComplete={finishIntro}/></Suspense>}
     <main aria-hidden={!opened} {...(!opened?{inert:''} as Record<string,string>:{})}>
       <section className="hero" id="home"><div className="hero-aura" aria-hidden="true"/><div className="hero-orbit" aria-hidden="true"/>
         <div className="hero-photo"><img src={data.photos.hero} alt="Романтична свадбена прослава во градина" fetchPriority="high"/></div><div className="hero-shade"/>

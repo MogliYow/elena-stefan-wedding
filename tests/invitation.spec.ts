@@ -7,7 +7,7 @@ await page.goto('/');
 await expect(page.getByRole('button',{name:'Отвори ја поканата',exact:true})).toBeVisible();
 await page.screenshot({path:'test-results/envelope-'+viewport.width+'.png'});
 await page.getByRole('button',{name:'Отвори ја поканата',exact:true}).click({force:true});
-await expect(page.getByRole('dialog')).toHaveCount(0,{timeout:10000});
+await expect(page.getByRole('dialog')).toHaveCount(0,{timeout:15000});
 await expect(page.locator('main')).toHaveAttribute('aria-hidden','false');
 expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
 await page.getByRole('link',{name:'Нашиот ден',exact:true}).click();

@@ -1,0 +1,34 @@
+.cinema-intro{position:fixed;inset:0;z-index:100;background:#f1ede4;color:#5a5143;overflow:hidden;isolation:isolate}
+.cinema-canvas{position:absolute;inset:0}.cinema-canvas canvas{width:100%;height:100%;display:block}
+.cinema-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 40%,#b7a78b17 100%)}
+.cinema-header{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:28px 4vw;z-index:4;gap:20px}
+.cinema-header>span{font-size:9px;letter-spacing:.25em}.cinema-header button{background:none;border:0;padding:12px 0;font-size:11px;min-height:44px;color:#76664e}
+.cinema-open{position:absolute;left:50%;top:50%;width:min(72vw,620px);height:min(48vw,410px);transform:translate(-50%,-50%);border:0;background:transparent;z-index:3;cursor:pointer;border-radius:15px}
+.cinema-open:focus-visible{outline:1px solid #a68c5e;outline-offset:12px}
+.sr-only{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden}
+.cinema-footer{position:absolute;bottom:max(6vh,28px);left:20px;right:20px;text-align:center;z-index:4}
+.cinema-footer>p{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-style:italic;margin-bottom:13px}
+.cinema-footer button{border:0;background:transparent;font-size:9px;letter-spacing:.24em;color:#79694e;padding:14px;min-height:44px}
+.cinema-footer button span{display:inline-block;margin-left:15px;font-size:18px}
+.cinema-progress{display:block;width:80px;height:1px;margin:26px auto;background:linear-gradient(90deg,transparent,#ac9369,transparent);animation:cinema-pulse 1.5s infinite alternate}
+.cinema-ring-title{position:absolute;top:13%;left:15px;right:15px;text-align:center;z-index:2;opacity:0;translate:0 15px;transition:opacity 1s,translate 1s;pointer-events:none}
+.cinema-ring-title>span{font-size:9px;letter-spacing:.23em}.cinema-ring-title h2{font-size:clamp(34px,5vw,58px);margin:13px 0 8px}.cinema-ring-title h2 em{color:#a58a5c;font-size:.7em}.cinema-ring-title p{font-size:11px;letter-spacing:.12em}.cinema-rings .cinema-ring-title{opacity:1;translate:0 0}
+@keyframes cinema-pulse{from{opacity:.3;scale:.7 1}to{opacity:1;scale:1 1}}
+/* The accessible no-WebGL version preserves both scenes and the same controls. */
+.cinema-fallback{position:absolute;inset:0;perspective:1200px;background:repeating-linear-gradient(110deg,#fff0 0 90px,#c4b6990b 150px,#fff5 210px,#fff0 320px)}
+.fallback-envelope{position:absolute;left:50%;top:49%;width:min(74vw,580px);aspect-ratio:1.52;translate:-50% -50%;background:linear-gradient(145deg,#e8dfce,#fffaf0);border:1px solid #d3c8b2;box-shadow:0 2px #d2c4ab,0 5px #e2d5bd,8px 26px 35px #63523935;transform:rotate(-3deg);transition:transform 2s,opacity 1s}
+.fallback-envelope:before{content:'';position:absolute;inset:0;background:linear-gradient(35deg,transparent 49.7%,#b9a88b44 50%,transparent 50.5%),linear-gradient(-35deg,transparent 49.7%,#b9a88b44 50%,transparent 50.5%)}
+.fallback-flap{position:absolute;inset:0 0 40%;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(160deg,#fffaf0,#ddd0ba);transform-origin:50% 0;transition:transform 1.6s .6s}
+.fallback-band{position:absolute;top:53%;left:0;right:0;height:12%;background:linear-gradient(#bba17e,#f6e2bf 20%,#e8d1ad 40%,#bda17c 70%,#f4dfbb);box-shadow:0 4px 6px #69533633;transition:opacity .7s}
+.fallback-bow{position:absolute;left:50%;top:59%;width:55%;height:28%;translate:-50% -50%}
+.fallback-bow i{position:absolute;bottom:30%;width:53%;height:85%;border:10px solid #dac29e;border-radius:65% 45% 50% 40%;background:linear-gradient(155deg,#ac8d66,#f5e2c3 35%,#b99b75 65%,#e6cfad);box-shadow:inset 1px 3px 6px #fff9,0 4px 8px #66513840;transform:rotate(15deg);transition:transform 1.5s,opacity 1s}
+.fallback-bow i:nth-child(2){right:0;transform:rotate(-15deg)}.fallback-bow b{position:absolute;width:19%;height:50%;left:41%;top:24%;border-radius:35%;background:linear-gradient(90deg,#a68b65,#f2ddba,#baa07c);box-shadow:2px 3px 7px #6e543933;transition:opacity .5s}
+.fallback-envelope>span{position:absolute;top:77%;left:0;right:0;text-align:center;font:italic 25px var(--serif);color:#a68e68}
+.cinema-opening .fallback-bow i{transform:translate(-120%,40%) rotate(-25deg);opacity:0}.cinema-opening .fallback-bow i:nth-child(2){transform:translate(120%,40%) rotate(25deg)}.cinema-opening .fallback-bow b,.cinema-opening .fallback-band{opacity:0}.cinema-opening .fallback-flap{transform:rotateX(175deg)}
+.cinema-rings .fallback-envelope{transform:translate(-100vw,60px) rotate(-12deg);opacity:0}
+.fallback-jewels{position:absolute;width:min(62vw,380px);height:240px;left:50%;top:53%;translate:-50% -30%;opacity:0;transform:scale(.8);transition:opacity 1s,transform 1.2s}
+.cinema-rings .fallback-jewels{opacity:1;transform:scale(1)}.fallback-box{position:absolute;inset:35% 0 0;border-radius:20px;background:radial-gradient(ellipse at 50% 0,#77836a,#354638 70%);box-shadow:0 4px #d2b67e,0 12px #344032,0 22px #303c30,12px 35px 30px #312a253b;border:14px solid #53614d;transform:perspective(600px) rotateX(32deg)}
+.fallback-box-lid{position:absolute;left:0;right:0;bottom:56%;height:63%;border:14px solid #53614d;border-radius:22px;background:radial-gradient(ellipse at 50% 50%,#53604b,#354131);box-shadow:0 -4px #748267;text-align:center;padding:30px;color:#c5b080;font:italic 27px var(--serif);transform:perspective(600px) rotateX(-20deg)}
+.fallback-box i{position:absolute;left:16%;top:9%;width:29%;aspect-ratio:1;border-radius:50%;border:8px solid #dab567;box-shadow:inset 2px 2px 0 #fff1c9,inset -3px -3px 0 #977232,2px 2px 0 #947139,2px 8px 12px #1119;transform:rotateY(-15deg)}.fallback-box i:nth-child(2){left:55%;border-width:6px;transform:rotateY(15deg)}.fallback-box b{position:absolute;left:63%;top:-15%;color:#fff2cd;font-size:48px;text-shadow:0 2px 3px #957b49}
+@media(max-width:600px){.cinema-header{padding:18px 22px}.cinema-header>span{max-width:120px;line-height:1.8;font-size:8px}.cinema-header button{font-size:9px}.cinema-footer{bottom:max(7vh,30px)}.cinema-ring-title{top:17%}.cinema-ring-title>span{font-size:8px}.cinema-open{width:90vw;height:62vw}.fallback-envelope{width:85vw}.fallback-jewels{width:66vw;height:195px;top:55%}.fallback-box-lid{padding:20px}.fallback-box i{border-width:6px}.fallback-box b{font-size:35px}}
+@media(prefers-reduced-motion:reduce){.cinema-progress{animation:none}.cinema-intro *{transition:none!important}}
