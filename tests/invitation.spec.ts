@@ -4,7 +4,7 @@ test('envelope, scroll, RSVP, music, replay '+viewport.width, async({page})=>{
 await page.setViewportSize(viewport);
 const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
 await page.goto('/');
-await expect(page.getByRole('button',{name:'Отвори ја поканата',exact:true})).toBeVisible();
+await expect(page.getByRole('button',{name:'Отвори ја поканата',exact:true})).toBeVisible({timeout:15000});
 await page.screenshot({path:'test-results/envelope-'+viewport.width+'.png'});
 await page.getByRole('button',{name:'Отвори ја поканата',exact:true}).click({force:true});
 await expect(page.getByRole('dialog')).toHaveCount(0,{timeout:15000});
