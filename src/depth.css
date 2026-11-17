@@ -1,3 +1,5 @@
+/* GSAP owns reveals; inherited CSS transitions must not supply hidden end states. */
+.experience .reveal{opacity:1;transform:none;transition:none}
 /* A paper-and-gold world: perspective, sculpted lettering and layered light. */
 .experience{position:relative;isolation:isolate}
 .gold-scene{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}

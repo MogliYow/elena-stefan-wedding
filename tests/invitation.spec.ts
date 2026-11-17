@@ -13,6 +13,12 @@ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.inne
 await page.getByRole('link',{name:'Нашиот ден',exact:true}).click();
 await expect(page).toHaveURL(/#day$/);
 await expect(page.getByRole('heading',{name:'Еден ден. Цела љубов.'})).toBeInViewport();
+for(const row of await page.locator('.timeline-item').all()){
+await row.scrollIntoViewIfNeeded();
+await expect(row).toBeVisible();
+await expect(row).toHaveCSS('opacity','1');
+}
+
 await page.locator('#rsvp').scrollIntoViewIfNeeded();
 await page.getByLabel('Име и презиме *',{exact:true}).fill('Тест Гост');
 await page.getByLabel('Број на гости, вклучувајќи ве и вас *',{exact:true}).fill('2');
