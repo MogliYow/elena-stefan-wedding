@@ -6,6 +6,7 @@ import './styles.css';
 import {KineticText, useDepthMotion} from './DepthExperience';
 import './depth.css';
 
+const LuxuryHook=lazy(()=>import('./LuxuryHook'));
 const CinematicIntro=lazy(()=>import('./CinematicIntro'));
 
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -94,4 +95,4 @@ function Music(){
  }
  return <div className="music-control">{error&&<p className="music-error" role="status">{error}</p>}<button className={'music-button '+(playing?'is-playing':'')} onClick={toggle} aria-pressed={playing}><span className="equalizer" aria-hidden="true"><i/><i/><i/><i/></span>{playing?'Исклучи музика':'Вклучи музика'}</button></div>;
 }
-createRoot(document.getElementById('root')!).render(<App/>);
+createRoot(document.getElementById('root')!).render(new URLSearchParams(location.search).has('hook')?<Suspense fallback={<div className="cinema-intro"/>}><LuxuryHook motion={!reduced()} onComplete={()=>{}}/></Suspense>:<App/>);
