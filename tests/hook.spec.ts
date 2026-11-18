@@ -19,6 +19,7 @@ test('hook stays open and resets its 3D canvas on desktop',async({page})=>{
  await expect(page.locator('.cinema-render-webgl')).toBeVisible({timeout:15000});
  await page.getByRole('button',{name:'Отвори ја поканата',exact:true}).click();
  await page.clock.fastForward(60000);
+ await page.clock.runFor(100);
  await expect(page.getByRole('button',{name:'ПОВТОРИ ГО ОТВОРАЊЕТО'})).toBeVisible();
  await page.screenshot({path:'test-results/hook-desktop-open.png'});
  await page.getByRole('button',{name:'ПОВТОРИ ГО ОТВОРАЊЕТО'}).click();

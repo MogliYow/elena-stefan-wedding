@@ -123,11 +123,11 @@ export default function LuxuryHook({motion,onComplete,opened=false}:{motion:bool
   tailL.rotation.z=.03;tailR.rotation.z=-.03;
   const knotGeo=new THREE.CylinderGeometry(.19,.16,.43,64,32); const kp=knotGeo.attributes.position; for(let i=0;i<kp.count;i++){const y=kp.getY(i),a=Math.atan2(kp.getZ(i),kp.getX(i));const r=1+.07*Math.sin(a*7+y*18);kp.setX(i,kp.getX(i)*r);kp.setZ(i,kp.getZ(i)*r);}knotGeo.computeVertexNormals();const knot=mesh(knotGeo,satin,bow,0,.02,.22);knot.scale.z=.7;knot.rotation.z=-.14;
   const tagMat=new THREE.MeshStandardMaterial({map:textures[5],roughness:.8});mats.push(tagMat);const tag=new THREE.Group();bow.add(tag);
-  let frame=0,px=0,py=0,last=0,dirty=true;
-  const resize=()=>{const w=el.clientWidth,h=el.clientHeight;camera.aspect=w/h;camera.position.z=Math.max(10,3.2/(Math.tan(THREE.MathUtils.degToRad(17))*camera.aspect));camera.updateProjectionMatrix();renderer.setSize(Math.min(w,1600),Math.min(w,1600)/w*h,false);dirty=true;};
+  let frame=0,px=0,py=0,last=0,dirty=true,renderedTime=-1;
+  const resize=()=>{const w=el.clientWidth,h=el.clientHeight;camera.aspect=w/h;camera.position.z=Math.max(13.5,3.2/(Math.tan(THREE.MathUtils.degToRad(17))*camera.aspect));camera.updateProjectionMatrix();renderer.setSize(Math.min(w,1600),Math.min(w,1600)/w*h,false);dirty=true;};
   const move=(e:PointerEvent)=>{px=(e.clientX/innerWidth-.5);py=(e.clientY/innerHeight-.5);dirty=true;};
   const draw=(now:number)=>{
-   frame=requestAnimationFrame(draw);if(now-last<40)return;last=now;if((started.current===null||now-started.current>8000)&&!dirty&&!redraw.current)return;dirty=false;redraw.current=false;
+   frame=requestAnimationFrame(draw);if(now-last<40)return;last=now;if((started.current===null||(now-started.current>8000&&renderedTime>=2.9))&&!dirty&&!redraw.current)return;dirty=false;redraw.current=false;
    const t=started.current===null?0:Math.min(2.9,(now-started.current)/1000);
    const untie=segment(t,.1,1.25),lift=segment(t,1,2.3),pull=segment(t,1.8,3.0);
    envelope.rotation.y=-.12+px*.16;envelope.rotation.x=.16+py*.12;envelope.position.set(0,-pull*.28,0);
@@ -135,7 +135,7 @@ export default function LuxuryHook({motion,onComplete,opened=false}:{motion:bool
    loopL.morphTargetInfluences![0]=untie;loopR.morphTargetInfluences![0]=untie;left.position.set(-untie*2.9,-untie*.7,untie*.3);right.position.set(untie*2.9,-untie*.45,untie*.3);left.rotation.z=untie*.55;right.rotation.z=-untie*.5;
    knot.scale.setScalar(1-untie*.95);tag.position.y=-.65-untie*.7;bands.scale.x=1+untie*.5;bow.visible=t<2.5;
    key.position.x=-3+px*.35;
-   renderer.render(scene,camera);
+   renderer.render(scene,camera);renderedTime=t;
   };
   const lost=(e:Event)=>{e.preventDefault();setRenderMode('fallback');cancelAnimationFrame(frame);};
   resize();frame=requestAnimationFrame(draw);window.addEventListener('resize',resize);window.addEventListener('pointermove',move,{passive:true});renderer.domElement.addEventListener('webglcontextlost',lost);
