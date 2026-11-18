@@ -12,7 +12,7 @@ const segment=(t:number,a:number,b:number)=>ease((t-a)/(b-a));
 function texture(kind:'paper'|'satin'|'velvet'|'liner'|'card'|'monogram'){
  const c=document.createElement('canvas'); c.width=1024;c.height=kind==='card'?690:1024;const x=c.getContext('2d')!;
  let seed=312;const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
- x.fillStyle=kind==='velvet'?'#36423b':kind==='satin'?'#d4bea0':'#f5f0e6';x.fillRect(0,0,1024,1024);
+ x.fillStyle=kind==='velvet'?'#36423b':kind==='satin'?'#f5e5de':'#f5f0e6';x.fillRect(0,0,1024,1024);
  for(let i=0;i<85000;i++){const a=rand()*1024,b=rand()*1024;x.fillStyle=rand()>.5?'rgba(255,255,255,.12)':'rgba(69,49,26,.16)';x.fillRect(a,b,kind==='satin'?1:rand()*2+.3,kind==='velvet'?3:1);}
  if(kind==='satin'){for(let i=0;i<1024;i+=2){x.fillStyle=i%4?'#ffffff0b':'#3f2c1a0a';x.fillRect(0,i,1024,1);}}
  if(kind==='liner'){
@@ -58,7 +58,7 @@ export default function LuxuryHook({motion,onComplete,opened=false}:{motion:bool
   for(let i=0;i<19000;i++){grainSeed=(grainSeed*16807)%2147483647;const x=grainSeed%512;grainSeed=(grainSeed*16807)%2147483647;const y=grainSeed%512;const shade=100+grainSeed%55;gx.fillStyle=`rgb(${shade},${shade},${shade})`;gx.fillRect(x,y,1+grainSeed%3,.7);}
   const grain=new THREE.CanvasTexture(grainCanvas);grain.wrapS=grain.wrapT=THREE.RepeatWrapping;grain.repeat.set(2,2);textures.push(grain);paper.bumpMap=grain;paper.bumpScale=.025;
   const liner=new THREE.MeshStandardMaterial({map:textures[3],roughness:.95,side:THREE.DoubleSide});
-  const satin=new THREE.MeshPhysicalMaterial({map:textures[1],color:0xd9c5af,metalness:0,roughness:.32,anisotropy:.55,sheen:1,sheenColor:new THREE.Color(0xffe8c8),sheenRoughness:.35,side:THREE.DoubleSide});
+  const satin=new THREE.MeshPhysicalMaterial({map:textures[1],color:0xd89fa0,metalness:0,roughness:.32,anisotropy:.55,sheen:1,sheenColor:new THREE.Color(0xffe7e4),sheenRoughness:.35,side:THREE.DoubleSide});
   const velvet=new THREE.MeshPhysicalMaterial({map:textures[2],bumpMap:textures[2],bumpScale:.035,color:0x708579,roughness:.93,sheen:1,sheenColor:new THREE.Color(0x9aaa8d),sheenRoughness:.8});
   const gold=new THREE.MeshStandardMaterial({color:0xd6ad61,metalness:1,roughness:.19,envMapIntensity:1.5});
   const diamond=new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:.04,transmission:.3,thickness:.2,ior:2.4,envMapIntensity:2.8});
@@ -71,7 +71,7 @@ export default function LuxuryHook({motion,onComplete,opened=false}:{motion:bool
   // Draped backdrop with shallow, irregular folds and woven surface detail.
   const clothGeo=new THREE.PlaneGeometry(28,24,100,100),pos=clothGeo.attributes.position;
   for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i);pos.setZ(i,.12*Math.sin(x*1.8+y*.42)+.04*Math.sin(x*4.4-y*.65));}clothGeo.computeVertexNormals();
-  const clothMat=new THREE.MeshPhysicalMaterial({color:0xb5afa3,roughness:.72,sheen:.7,sheenColor:new THREE.Color(0xfff7e5)});mats.push(clothMat);const backdrop=mesh(clothGeo,clothMat,scene,0,0,-.7);backdrop.receiveShadow=false;
+  const clothMat=new THREE.MeshPhysicalMaterial({color:0xd7cbc3,roughness:.72,sheen:.7,sheenColor:new THREE.Color(0xfff7e5)});mats.push(clothMat);const backdrop=mesh(clothGeo,clothMat,scene,0,0,-.7);backdrop.receiveShadow=false;
   const sc=document.createElement('canvas');sc.width=256;sc.height=256;const sx=sc.getContext('2d')!;const grad=sx.createRadialGradient(128,128,5,128,128,128);grad.addColorStop(0,'rgba(56,45,28,.32)');grad.addColorStop(.45,'rgba(56,45,28,.16)');grad.addColorStop(1,'rgba(56,45,28,0)');sx.fillStyle=grad;sx.fillRect(0,0,256,256);const st=new THREE.CanvasTexture(sc);textures.push(st);const sm=new THREE.MeshBasicMaterial({map:st,transparent:true,depthWrite:false});mats.push(sm);const softShadow=mesh(new THREE.PlaneGeometry(7,4),sm,scene,.2,-.2,-.35);softShadow.castShadow=false;softShadow.receiveShadow=false;
 
   const envelope=new THREE.Group();scene.add(envelope);envelope.rotation.set(-.09,-.1,-.035);
@@ -106,20 +106,40 @@ export default function LuxuryHook({motion,onComplete,opened=false}:{motion:bool
   const bow=new THREE.Group();bow.position.set(0,-.35,.42);envelope.add(bow);
   function ribbon(points:number[][],width:number,parent:THREE.Object3D){
    const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p as [number,number,number])));const n=160,positions:number[]=[],uv:number[]=[],indices:number[]=[];
-   for(let i=0;i<=n;i++){const t=i/n,p=curve.getPoint(t),tangent=curve.getTangent(t);const side=new THREE.Vector3(-tangent.y,tangent.x,0).normalize();const twist=.65*Math.sin(t*Math.PI*2+.4);side.applyAxisAngle(tangent,twist);for(let j=0;j<13;j++){const v=j/12-.5,pp=p.clone().addScaledVector(side,v*width);pp.z+=Math.cos(v*Math.PI*2)*(.018+.028*Math.pow(Math.abs(2*t-1),5))+Math.sin(v*12+t*9)*.003;positions.push(pp.x,pp.y,pp.z);uv.push(t*3,j/12);}if(i<n)for(let j=0;j<12;j++){const a=i*13+j;indices.push(a,a+13,a+1,a+1,a+13,a+14);}}
+   for(let i=0;i<=n;i++){
+    const t=i/n;
+    const point=curve.getPoint(t);
+    const tangent=curve.getTangent(t);
+    const across=new THREE.Vector3(-tangent.y,tangent.x,0).normalize();
+    across.applyAxisAngle(tangent,.82*Math.sin(t*Math.PI*2+.4));
+    const normal=new THREE.Vector3().crossVectors(tangent,across).normalize();
+    const pinch=Math.exp(-3.6*(point.x*point.x+point.y*point.y));
+    for(let j=0;j<=12;j++){
+     const v=j/12-.5;
+     const fold=Math.cos(v*Math.PI*2)*.026 + pinch*Math.sin(v*17+t*1.6)*.046;
+     const hem=Math.pow(Math.abs(v)*2,12)*.014;
+     const vertex=point.clone().addScaledVector(across,v*width*(1-.45*pinch)).addScaledVector(normal,fold+hem);
+     positions.push(vertex.x,vertex.y,vertex.z);
+     uv.push(t,j/12);
+    }
+    if(i<n)for(let j=0;j<12;j++){
+     const a=i*13+j;
+     indices.push(a,a+13,a+1,a+1,a+13,a+14);
+    }
+   }
    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();return mesh(g,satin,parent);
   }
   const bands=new THREE.Group();bow.add(bands);ribbon([[-2.75,.05,-.08],[-1.8,.04,-.03],[0,0,.04],[1.8,.04,-.03],[2.75,.05,-.08]],.4,bands);
   const left=new THREE.Group(),right=new THREE.Group();bow.add(left,right);
-  const loopL=ribbon([[0,0,.15],[-.7,.65,.6],[-1.52,.82,.43],[-1.65,.4,.18],[-1.05,.14,.04],[0,-.06,.16]],.39,left);
-  const loopR=ribbon([[0,0,.16],[.65,.72,.54],[1.45,.71,.4],[1.62,.27,.15],[1.05,.04,.02],[0,-.04,.18]],.39,right);
+  const loopL=ribbon([[0,0,.15],[-.7,.65,.6],[-1.52,.82,.43],[-1.65,.4,.18],[-1.05,.14,.04],[0,-.06,.16]],.66,left);
+  const loopR=ribbon([[0,0,.16],[.65,.72,.54],[1.45,.71,.4],[1.62,.27,.15],[1.05,.04,.02],[0,-.04,.18]],.63,right);
   for(const [loop,sign] of [[loopL,-1],[loopR,1]] as const){
    const a=loop.geometry.attributes.position,target=new Float32Array(a.count*3);
    for(let i=0;i<a.count;i++){const t=Math.floor(i/13)/160,v=i%13/12-.5;target[i*3]=sign*t*2.5;target[i*3+1]=Math.sin(t*Math.PI)*.15+v*.39;target[i*3+2]=.1+Math.sin(t*Math.PI)*.08;}
    loop.geometry.morphAttributes.position=[new THREE.Float32BufferAttribute(target,3)];loop.updateMorphTargets();
   }
-  const tailL=ribbon([[-.12,0,.08],[-.5,-.5,.24],[-.9,-1.08,.3],[-1.43,-1.39,.16]],.42,left);
-  const tailR=ribbon([[.12,0,.09],[.55,-.35,.26],[1.1,-.81,.28],[1.75,-.95,.19]],.42,right);
+  const tailL=ribbon([[-.12,0,.08],[-.5,-.5,.24],[-.9,-1.08,.3],[-1.43,-1.39,.16]],.52,left);
+  const tailR=ribbon([[.12,0,.09],[.55,-.35,.26],[1.1,-.81,.28],[1.75,-.95,.19]],.54,right);
   tailL.rotation.z=.03;tailR.rotation.z=-.03;
   const knotGeo=new THREE.CylinderGeometry(.19,.16,.43,64,32); const kp=knotGeo.attributes.position; for(let i=0;i<kp.count;i++){const y=kp.getY(i),a=Math.atan2(kp.getZ(i),kp.getX(i));const r=1+.07*Math.sin(a*7+y*18);kp.setX(i,kp.getX(i)*r);kp.setZ(i,kp.getZ(i)*r);}knotGeo.computeVertexNormals();const knot=mesh(knotGeo,satin,bow,0,.02,.22);knot.scale.z=.7;knot.rotation.z=-.14;
   const tagMat=new THREE.MeshStandardMaterial({map:textures[5],roughness:.8});mats.push(tagMat);const tag=new THREE.Group();bow.add(tag);
@@ -129,11 +149,27 @@ export default function LuxuryHook({motion,onComplete,opened=false}:{motion:bool
   const draw=(now:number)=>{
    frame=requestAnimationFrame(draw);if(now-last<40)return;last=now;if((started.current===null||(now-started.current>8000&&renderedTime>=2.9))&&!dirty&&!redraw.current)return;dirty=false;redraw.current=false;
    const t=started.current===null?0:Math.min(2.9,(now-started.current)/1000);
-   const untie=segment(t,.1,1.25),lift=segment(t,1,2.3),pull=segment(t,1.8,3.0);
+   const loosen=segment(t,0,.34);
+   const firstLoop=segment(t,.19,.99);
+   const secondLoop=segment(t,.64,1.39);
+   const release=segment(t,1.24,1.87);
+   const lift=segment(t,1.53,2.45);
+   const pull=segment(t,2.05,2.9);
    envelope.rotation.y=-.12+px*.16;envelope.rotation.x=.16+py*.12;envelope.position.set(0,-pull*.28,0);
    flap.rotation.x=-lift*Math.PI*.98;flap.position.z=.27-lift*.55;card.position.y=pull*1.9;
-   loopL.morphTargetInfluences![0]=untie;loopR.morphTargetInfluences![0]=untie;left.position.set(-untie*2.9,-untie*.7,untie*.3);right.position.set(untie*2.9,-untie*.45,untie*.3);left.rotation.z=untie*.55;right.rotation.z=-untie*.5;
-   knot.scale.setScalar(1-untie*.95);tag.position.y=-.65-untie*.7;bands.scale.x=1+untie*.5;bow.visible=t<2.5;
+   loopR.morphTargetInfluences![0]=firstLoop;
+   loopL.morphTargetInfluences![0]=secondLoop;
+   right.position.set(.16*firstLoop,-.16*firstLoop,.12*firstLoop);
+   left.position.set(-.14*secondLoop,-.1*secondLoop,.1*secondLoop);
+   right.rotation.z=-firstLoop*.16;
+   left.rotation.z=secondLoop*.19;
+   tailR.rotation.z=-.03-firstLoop*.22;
+   tailL.rotation.z=.03+secondLoop*.16;
+   knot.rotation.z=-.14+.37*loosen;
+   knot.scale.set(1+.24*loosen,1-.27*loosen,.75);
+   bow.position.set(7*release,-.35-.65*release,.42+.4*release);
+   bow.rotation.z=-release*.18;
+   bow.visible=release<1;
    key.position.x=-3+px*.35;
    renderer.render(scene,camera);renderedTime=t;
   };
@@ -145,8 +181,8 @@ export default function LuxuryHook({motion,onComplete,opened=false}:{motion:bool
   <div className="cinema-canvas" ref={host} aria-hidden="true"/>
   <div className="cinema-vignette"/>
   {renderMode!=='webgl'&&<div className="cinema-fallback" aria-hidden="true"><div className="fallback-envelope"><div className="hook-fallback-card">Елена & Стефан<small>12 ЈУНИ 2027</small></div><div className="fallback-flap"/><div className="fallback-band"/><div className="fallback-bow"><i/><i/><b/></div><span>Е & С</span></div><div className="fallback-jewels"><div className="fallback-box-lid">Е & С</div><div className="fallback-box"><i/><i/><b>✧</b></div></div></div>}
-  <header className="hook-heading"><span>ЕДНА ПРИКАЗНА. ЗАСЕКОГАШ.</span><h1>За вас, со љубов.</h1><p>Елена & Стефан</p></header>
+  <header className="hook-heading"><h1>За вас, со љубов.</h1><p>Елена & Стефан</p></header>
   {phase==='sealed'&&<button className="cinema-open" onClick={open} aria-label="Отвори ја поканата"/>}
-  <footer className="cinema-footer">{phase==='sealed'?<button onClick={open}>ОТВОРИ ГО ПЛИКОТ <span className="cinema-arrow" aria-hidden="true"/></button>:phase==='rings'?<button onClick={finish}>ПОВТОРИ ГО ОТВОРАЊЕТО</button>:<p>За еден незаборавен ден…</p>}</footer>
+  <footer className="cinema-footer">{phase==='sealed'?<button onClick={open}>ОТВОРИ ГО ПЛИКОТ <span className="cinema-arrow" aria-hidden="true"/></button>:phase==='rings'?<button onClick={finish}>ПОВТОРИ ГО ОТВОРАЊЕТО</button>:null}</footer>
  </div>;
 }
