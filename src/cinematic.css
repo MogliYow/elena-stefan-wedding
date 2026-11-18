@@ -32,3 +32,11 @@
 .fallback-box i{position:absolute;left:16%;top:9%;width:29%;aspect-ratio:1;border-radius:50%;border:8px solid #dab567;box-shadow:inset 2px 2px 0 #fff1c9,inset -3px -3px 0 #977232,2px 2px 0 #947139,2px 8px 12px #1119;transform:rotateY(-15deg)}.fallback-box i:nth-child(2){left:55%;border-width:6px;transform:rotateY(15deg)}.fallback-box b{position:absolute;left:63%;top:-15%;color:#fff2cd;font-size:48px;text-shadow:0 2px 3px #957b49}
 @media(max-width:600px){.cinema-header{padding:18px 22px}.cinema-header>span{max-width:120px;line-height:1.8;font-size:8px}.cinema-header button{font-size:9px}.cinema-footer{bottom:max(7vh,30px)}.cinema-ring-title{top:17%}.cinema-ring-title>span{font-size:8px}.cinema-open{width:90vw;height:62vw}.fallback-envelope{width:85vw}.fallback-jewels{width:66vw;height:195px;top:55%}.fallback-box-lid{padding:20px}.fallback-box i{border-width:6px}.fallback-box b{font-size:35px}}
 @media(prefers-reduced-motion:reduce){.cinema-progress{animation:none}.cinema-intro *{transition:none!important}}
+
+/* The revealed jewellery remains part of the invitation, without a timed scene replacement. */
+.cinema-inline{position:relative;height:100svh;min-height:620px;z-index:1}.cinema-inline .cinema-header{visibility:hidden}
+.cinema-arrow{width:11px;height:11px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg);vertical-align:3px}
+.experience .hero{min-height:100px;height:100px;background:#f1ede4;color:#5a5143;overflow:visible}
+.experience .hero-photo,.experience .hero-shade,.experience .hero-content,.experience .hero-aura,.experience .hero-orbit,.experience .hero-side-note,.experience .hero .scroll-cue{display:none}
+.experience .hero-nav{position:relative;top:auto;color:#5a5143;padding-top:30px}.experience .hero-nav a{color:inherit}
+@media(max-width:600px){.cinema-sealed .cinema-footer{bottom:14svh}.cinema-header{padding-top:max(16px,env(safe-area-inset-top))}.cinema-footer button{letter-spacing:.15em}.cinema-ring-title{top:14%}}

@@ -12,9 +12,12 @@ for(const width of [390,1440])test('cinematic ribbon and jewellery reveal '+widt
  await expect(page.locator('.cinema-rings')).toBeVisible({timeout:6000});
  await page.clock.runFor(50);
  await page.screenshot({path:'test-results/cinema-rings-'+width+'.png'});
+ await page.clock.fastForward(60000);
+ await expect(page.getByRole('dialog')).toBeVisible();
  await expect(page.getByRole('button',{name:'ПРОДОЛЖИ КОН ПОКАНАТА',exact:false})).toBeVisible();
  await page.getByRole('button',{name:'ПРОДОЛЖИ КОН ПОКАНАТА',exact:false}).click();
  await expect(page.getByRole('dialog')).toHaveCount(0);
+ await expect(page.locator('.cinema-inline')).toBeVisible();
 });
 test('no WebGL still opens both scenes and permits skipping',async({page})=>{
  await page.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){if(type==='webgl2'||type==='webgl'||type==='experimental-webgl')return null;return original.call(this,type,...args);} as typeof original;});
@@ -22,6 +25,7 @@ test('no WebGL still opens both scenes and permits skipping',async({page})=>{
  await expect(page.locator('.cinema-fallback')).toBeVisible();
  await page.getByRole('button',{name:'Отвори ја поканата',exact:true}).click();
  await expect(page.locator('.cinema-rings')).toBeVisible({timeout:6000});
- await page.getByRole('button',{name:'Прескокни го воведот ↗',exact:true}).click();
+ await page.getByRole('button',{name:'Прескокни го воведот',exact:true}).click();
  await expect(page.getByRole('dialog')).toHaveCount(0);
+ await expect(page.locator('.cinema-inline')).toBeVisible();
 });

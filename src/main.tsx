@@ -22,10 +22,11 @@ function Sprig({className=''}:{className?:string}) {
 }
 function App(){
   const [opened,setOpened]=useState(false);
+  const [introKey,setIntroKey]=useState(0);
   const [motion,setMotion]=useState(()=>!reduced());
   useDepthMotion(opened,motion);
   useEffect(()=>{const query=window.matchMedia('(prefers-reduced-motion: reduce)');const change=()=>setMotion(!query.matches);query.addEventListener('change',change);return()=>query.removeEventListener('change',change);},[]);
-  const finishIntro=()=>{setOpened(true);requestAnimationFrame(()=>{document.getElementById('names')?.focus();window.scrollTo(0,0);});};
+  const finishIntro=()=>{setOpened(true);};
   useEffect(()=>{document.body.style.overflow=opened?'':'hidden';return()=>{document.body.style.overflow='';};},[opened]);
   useEffect(()=>{
     const observer=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('in-scene',e.isIntersecting)),{rootMargin:'100px'});
@@ -33,7 +34,7 @@ function App(){
     return()=>observer.disconnect();
   },[]);
   return <div className={motion?'experience motion-enabled':'experience motion-paused'}>
-    {!opened&&<Suspense fallback={<div className="cinema-intro"><div className="cinema-footer"><p>За вас, со љубов</p><button onClick={finishIntro}>Прескокни го воведот ↗</button></div></div>}><CinematicIntro motion={motion} onComplete={finishIntro}/></Suspense>}
+    {<Suspense fallback={<div className="cinema-intro"><div className="cinema-footer"><p>За вас, со љубов</p><button onClick={finishIntro}>Прескокни го воведот ↗</button></div></div>}><CinematicIntro key={introKey} opened={opened} motion={motion} onComplete={finishIntro}/></Suspense>}
     <main aria-hidden={!opened} {...(!opened?{inert:''} as Record<string,string>:{})}>
       <section className="hero" id="home"><div className="hero-aura" aria-hidden="true"/><div className="hero-orbit" aria-hidden="true"/>
         <div className="hero-photo"><img src={data.photos.hero} alt="Романтична свадбена прослава во градина" fetchPriority="high"/></div><div className="hero-shade"/>
@@ -49,7 +50,7 @@ function App(){
       <Countdown/>
       <section className="location section-pad" id="location"><div className="location-art reveal"><div className="venue-illustration"><div className="venue-roof"/>{['one','two','three','four'].map(n=><span key={n} className={'venue-column column-'+n}/>)}<div className="venue-steps"/></div><Sprig className="venue-sprig venue-sprig-left"/><Sprig className="venue-sprig venue-sprig-right"/><span className="venue-art-caption">Таму каде што се среќаваме.</span></div><div className="location-copy reveal"><p className="eyebrow">07 / Сите патишта водат до нас</p><h2><KineticText>Се гледаме<br/>во Скопје.</KineticText></h2><p className="body-copy">Еден посебен ден, во друштво на нашите најблиски. Со нетрпение ја очекуваме секоја прегратка.</p><a className="button button-outline" href={data.venue.maps} target="_blank" rel="noopener noreferrer">Отвори во Google Maps <span>↗</span></a><p className="location-note">Демо локација — точниот ресторан се внесува пред испраќање.</p></div></section>
       <RSVP/>
-      <section className="closing section-pad"><div className="reveal"><div className="closing-orbits" aria-hidden="true"><i/><i/><i/></div><span className="closing-monogram">{data.monogram}</span><p className="eyebrow">Најубавото допрва доаѓа</p><h2><KineticText>Приказната е наша.<br/>Спомените се заеднички.</KineticText></h2><p>Ви благодариме што сте дел од нашето засекогаш.</p><div className="closing-signature"><span>Со љубов</span><strong>Елена & Стефан</strong></div><button className="text-button" onClick={()=>{window.scrollTo(0,0);setOpened(false);}}>Повторно отвори го пликот ↗</button><p className="demo-footer">Твои покани · Демонстрациска свадбена покана</p></div></section>
+      <section className="closing section-pad"><div className="reveal"><div className="closing-orbits" aria-hidden="true"><i/><i/><i/></div><span className="closing-monogram">{data.monogram}</span><p className="eyebrow">Најубавото допрва доаѓа</p><h2><KineticText>Приказната е наша.<br/>Спомените се заеднички.</KineticText></h2><p>Ви благодариме што сте дел од нашето засекогаш.</p><div className="closing-signature"><span>Со љубов</span><strong>Елена & Стефан</strong></div><button className="text-button" onClick={()=>{window.scrollTo(0,0);setOpened(false);setIntroKey(k=>k+1);}}>Повторно отвори го пликот ↗</button><p className="demo-footer">Твои покани · Демонстрациска свадбена покана</p></div></section>
     </main>
     {opened&&<><Music/><button className="motion-toggle" aria-pressed={motion} onClick={()=>setMotion(v=>!v)}>{motion?'Ⅱ Паузирај движење':'▷ Вклучи движење'}</button></>}
   </div>;

@@ -26,36 +26,36 @@ function texture(kind:'paper'|'satin'|'velvet'|'liner'|'card'|'monogram'){
  const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=4;return tex;
 }
 
-export default function CinematicIntro({motion,onComplete}:{motion:boolean;onComplete:()=>void}){
+export default function CinematicIntro({motion,onComplete,opened=false}:{motion:boolean;onComplete:()=>void;opened?:boolean}){
  const host=useRef<HTMLDivElement>(null),started=useRef<number|null>(null),done=useRef(false),complete=useRef(onComplete);
  const [phase,setPhase]=useState<'sealed'|'opening'|'rings'>('sealed');
  const [renderMode,setRenderMode]=useState<'loading'|'webgl'|'fallback'>('loading');
  complete.current=onComplete;
- const finish=()=>{if(!done.current){done.current=true;complete.current();}};
+ const finish=()=>{if(!done.current){done.current=true;started.current=performance.now()-8000;setPhase('rings');complete.current();}};
  const timers=useRef<ReturnType<typeof setTimeout>[]>([]);
- const open=()=>{if(started.current!==null)return;if(!motion){finish();return;}started.current=performance.now();setPhase('opening');timers.current=[setTimeout(()=>setPhase('rings'),3300),setTimeout(finish,7900)];};
- // One wall-clock schedule: phase re-renders must not extend the intro.
+ const open=()=>{if(started.current!==null)return;if(!motion){finish();return;}started.current=performance.now();setPhase('opening');timers.current=[setTimeout(()=>setPhase('rings'),3300)];};
+ // Opening never navigates away: the guest chooses when to continue.
  useEffect(()=>()=>timers.current.forEach(clearTimeout),[]);
  useEffect(()=>{
   const el=host.current!;let renderer:THREE.WebGLRenderer;
   try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});}catch{setRenderMode('fallback');return;}
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(0xf1ede4,1);renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xf1ede4,1);renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.93;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   el.appendChild(renderer.domElement);setRenderMode('webgl');
   const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(34,1,.1,50);
   camera.position.set(0,0,10);camera.lookAt(0,0,0);
   const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();const env=pmrem.fromScene(room,.04);scene.environment=env.texture;scene.environmentIntensity=.65;
   const textures=[texture('paper'),texture('satin'),texture('velvet'),texture('liner'),texture('card'),texture('monogram')];
-  const paper=new THREE.MeshStandardMaterial({map:textures[0],bumpMap:textures[0],bumpScale:.035,color:0xf1e8da,roughness:.88});
+  const paper=new THREE.MeshStandardMaterial({map:textures[0],bumpMap:textures[0],bumpScale:.035,color:0xe8ddca,roughness:.88});
   const liner=new THREE.MeshStandardMaterial({map:textures[3],roughness:.95,side:THREE.DoubleSide});
-  const satin=new THREE.MeshPhysicalMaterial({map:textures[1],bumpMap:textures[1],bumpScale:.007,color:0xe3cfaa,metalness:.25,roughness:.33,sheen:1,sheenColor:new THREE.Color(0xffebcc),sheenRoughness:.35,side:THREE.DoubleSide});
+  const satin=new THREE.MeshPhysicalMaterial({map:textures[1],bumpMap:textures[1],bumpScale:.018,color:0xf0e1cc,metalness:0,roughness:.46,sheen:1,sheenColor:new THREE.Color(0xffebcc),sheenRoughness:.35,side:THREE.DoubleSide});
   const velvet=new THREE.MeshPhysicalMaterial({map:textures[2],bumpMap:textures[2],bumpScale:.035,color:0x708579,roughness:.93,sheen:1,sheenColor:new THREE.Color(0x9aaa8d),sheenRoughness:.8});
   const gold=new THREE.MeshStandardMaterial({color:0xd6ad61,metalness:1,roughness:.19,envMapIntensity:1.5});
   const diamond=new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:.04,transmission:.3,thickness:.2,ior:2.4,envMapIntensity:2.8});
   const mats:THREE.Material[]=[paper,liner,satin,velvet,gold,diamond];
   scene.add(new THREE.HemisphereLight(0xfffaf1,0x9c8f7e,1.1));
   const key=new THREE.DirectionalLight(0xfff5e4,2.6);key.position.set(-3,5,7);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-4.5;key.shadow.camera.right=4.5;key.shadow.camera.top=4.5;key.shadow.camera.bottom=-4.5;key.shadow.normalBias=.025;key.shadow.bias=-.0002;key.shadow.radius=4;scene.add(key);
-  const fill=new THREE.DirectionalLight(0xffffff,1.2);fill.position.set(5,0,3);scene.add(fill);
+  const fill=new THREE.DirectionalLight(0xffffff,.65);fill.position.set(5,0,3);scene.add(fill);
   const mesh=(geo:THREE.BufferGeometry,mat:THREE.Material,parent:THREE.Object3D,x=0,y=0,z=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;};
   const rounded=(w:number,h:number,d:number,r=.06)=>new RoundedBoxGeometry(w,h,d,3,r);
   // Draped backdrop with shallow, irregular folds and woven surface detail.
@@ -122,8 +122,8 @@ export default function CinematicIntro({motion,onComplete}:{motion:boolean;onCom
   const resize=()=>{const w=el.clientWidth,h=el.clientHeight;camera.aspect=w/h;camera.position.z=Math.max(10,3.2/(Math.tan(THREE.MathUtils.degToRad(17))*camera.aspect));camera.updateProjectionMatrix();renderer.setSize(Math.min(w,1200),Math.min(w,1200)/w*h,false);dirty=true;};
   const move=(e:PointerEvent)=>{px=(e.clientX/innerWidth-.5);py=(e.clientY/innerHeight-.5);dirty=true;};
   const draw=(now:number)=>{
-   frame=requestAnimationFrame(draw);if(now-last<40)return;last=now;if(started.current===null&&!dirty)return;dirty=false;
-   const t=started.current===null?0:(now-started.current)/1000;if(t>=7.9){finish();return;}
+   frame=requestAnimationFrame(draw);if(now-last<40)return;last=now;if((started.current===null||now-started.current>8000)&&!dirty)return;dirty=false;
+   const t=started.current===null?0:(now-started.current)/1000;
    const untie=segment(t,.1,1.25),lift=segment(t,1,2.3),pull=segment(t,1.8,3.0),out=segment(t,2.9,3.7),reveal=segment(t,3.3,4.5);
    envelope.rotation.y=-.1+px*.055;envelope.rotation.x=-.09+py*.035;envelope.position.set(-out*12,-out*1.4,0);envelope.visible=t<3.7;
    flap.rotation.x=-lift*Math.PI*.98;card.position.y=pull*1.9;
@@ -138,13 +138,13 @@ export default function CinematicIntro({motion,onComplete}:{motion:boolean;onCom
   resize();frame=requestAnimationFrame(draw);window.addEventListener('resize',resize);window.addEventListener('pointermove',move,{passive:true});renderer.domElement.addEventListener('webglcontextlost',lost);
   return()=>{cancelAnimationFrame(frame);window.removeEventListener('resize',resize);window.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('webglcontextlost',lost);scene.traverse(o=>{if(o instanceof THREE.Mesh)o.geometry.dispose();});mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());env.dispose();pmrem.dispose();room.dispose();renderer.dispose();renderer.domElement.remove();};
  },[]);
- return <div className={'cinema-intro cinema-'+phase+' cinema-render-'+renderMode} role="dialog" aria-modal="true" aria-label="Отворете ја свадбената покана">
+ return <div className={'cinema-intro cinema-'+phase+' cinema-render-'+renderMode+(opened?' cinema-inline':'')} role={opened?'region':'dialog'} aria-modal={opened?undefined:true} aria-label="Отворете ја свадбената покана">
   <div className="cinema-canvas" ref={host} aria-hidden="true"/>
   <div className="cinema-vignette"/>
   {renderMode!=='webgl'&&<div className="cinema-fallback" aria-hidden="true"><div className="fallback-envelope"><div className="fallback-flap"/><div className="fallback-band"/><div className="fallback-bow"><i/><i/><b/></div><span>Е & С</span></div><div className="fallback-jewels"><div className="fallback-box-lid">Е & С</div><div className="fallback-box"><i/><i/><b>✧</b></div></div></div>}
-  <header className="cinema-header"><span>ЕДНА ПРИКАЗНА. ЗАСЕКОГАШ.</span><button onClick={finish}>Прескокни го воведот ↗</button></header>
+  <header className="cinema-header"><span>ЕДНА ПРИКАЗНА. ЗАСЕКОГАШ.</span><button onClick={finish}>Прескокни го воведот </button></header>
   <div className="cinema-ring-title" aria-hidden={phase!=='rings'}><span>ДВЕ СРЦА. ЕДНО ВЕТУВАЊЕ.</span><h2>Елена <em>&</em> Стефан</h2><p>12 јуни 2027</p></div>
   {phase==='sealed'&&<button className="cinema-open" onClick={open} aria-label="Отвори ја поканата"><span className="sr-only">Допрете ја панделката</span></button>}
-  <footer className="cinema-footer"><p>{phase==='sealed'?'За вас, со љубов':phase==='opening'?'Нашата приказна се отвора…':'Најубавото допрва доаѓа'}</p>{phase==='sealed'?<button onClick={open}>ДОПРЕТЕ ЈА ПАНДЕЛКАТА <span>↗</span></button>:phase==='rings'?<button onClick={finish}>ПРОДОЛЖИ КОН ПОКАНАТА <span>↓</span></button>:<span className="cinema-progress"/>}</footer>
+  <footer className="cinema-footer"><p>{phase==='sealed'?'За вас, со љубов':phase==='opening'?'Нашата приказна се отвора…':'Најубавото допрва доаѓа'}</p>{phase==='sealed'?<button onClick={open}>ДОПРЕТЕ ЈА ПАНДЕЛКАТА <span className="cinema-arrow" aria-hidden="true"/></button>:phase==='rings'?<button onClick={()=>{if(opened)document.getElementById("welcome")?.scrollIntoView({behavior:motion?"smooth":"instant"});else finish();}}>ПРОДОЛЖИ КОН ПОКАНАТА <span className="cinema-arrow" aria-hidden="true"/></button>:<span className="cinema-progress"/>}</footer>
  </div>;
 }

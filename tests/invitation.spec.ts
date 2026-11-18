@@ -7,7 +7,8 @@ await page.goto('/');
 await expect(page.getByRole('button',{name:'Отвори ја поканата',exact:true})).toBeVisible({timeout:15000});
 await page.screenshot({path:'test-results/envelope-'+viewport.width+'.png'});
 await page.getByRole('button',{name:'Отвори ја поканата',exact:true}).click({force:true});
-await expect(page.getByRole('dialog')).toHaveCount(0,{timeout:15000});
+await page.getByRole('button',{name:'ПРОДОЛЖИ КОН ПОКАНАТА',exact:false}).click({timeout:15000});
+await expect(page.getByRole('dialog')).toHaveCount(0);
 await expect(page.locator('main')).toHaveAttribute('aria-hidden','false');
 expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
 await page.getByRole('link',{name:'Нашиот ден',exact:true}).click();
@@ -29,7 +30,7 @@ await expect(page.getByRole('button',{name:'Исклучи музика',exact:t
 await page.getByRole('button',{name:'Исклучи музика',exact:true}).click();
 await page.getByRole('button',{name:'Повторно отвори го пликот ↗',exact:true}).click();
 await expect(page.getByRole('dialog')).toBeVisible();
-await page.getByRole('button',{name:'Прескокни го воведот ↗',exact:true}).click();
+await page.getByRole('button',{name:'Прескокни го воведот',exact:true}).click();
 await expect(page.getByRole('dialog')).toHaveCount(0);
 expect(errors).toEqual([]);
 });}
@@ -48,7 +49,7 @@ await expect(page.getByRole('status')).toContainText('демонстрација
 });
 test('3D motion can be paused and resumed without hiding content',async({page})=>{
 await page.goto('/');
-await page.getByRole('button',{name:'Прескокни го воведот ↗',exact:true}).click();
+await page.getByRole('button',{name:'Прескокни го воведот',exact:true}).click();
 await expect(page.getByRole('button',{name:'Ⅱ Паузирај движење',exact:true})).toHaveAttribute('aria-pressed','true');
 await page.getByRole('button',{name:'Ⅱ Паузирај движење',exact:true}).click();
 await expect(page.locator('.gold-scene canvas')).toHaveCount(0);
