@@ -38,6 +38,8 @@ test('reduced motion and RSVP declining',async({page})=>{
 await page.emulateMedia({reducedMotion:'reduce'});
 await page.goto('/');
 await page.getByRole('button',{name:'Отвори ја поканата',exact:true}).press('Enter');
+await expect(page.locator('.atelier')).toHaveAttribute('data-phase','open');
+await page.getByRole('button',{name:'Продолжи кон поканата',exact:true}).press('Enter');
 await expect(page.getByRole('dialog')).toHaveCount(0);
 await expect(page.locator('.gold-scene canvas')).toHaveCount(0);
 await page.locator('#rsvp').scrollIntoViewIfNeeded();

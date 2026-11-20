@@ -27,8 +27,8 @@ function texture(kind:'paper'|'satin'|'velvet'|'liner'|'card'|'monogram'){
 }
 
 export default function CinematicIntro({motion,onComplete,opened=false}:{motion:boolean;onComplete:()=>void;opened?:boolean}){
- const host=useRef<HTMLDivElement>(null),started=useRef<number|null>(null),done=useRef(false),complete=useRef(onComplete);
- const [phase,setPhase]=useState<'sealed'|'opening'|'rings'>('sealed');
+ const host=useRef<HTMLDivElement>(null),started=useRef<number|null>(opened ? performance.now()-8000 : null),done=useRef(false),complete=useRef(onComplete);
+ const [phase,setPhase]=useState<'sealed'|'opening'|'rings'>(opened ? 'rings' : 'sealed');
  const [renderMode,setRenderMode]=useState<'loading'|'webgl'|'fallback'>('loading');
  complete.current=onComplete;
  const finish=()=>{if(!done.current){done.current=true;started.current=performance.now()-8000;setPhase('rings');complete.current();}};

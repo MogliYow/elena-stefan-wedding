@@ -35,7 +35,7 @@ function App(){
     return()=>observer.disconnect();
   },[]);
   return <div className={motion?'experience motion-enabled':'experience motion-paused'}>
-    {<Suspense fallback={<div className="cinema-intro"><div className="cinema-footer"><p>За вас, со љубов</p><button onClick={finishIntro}>Прескокни го воведот ↗</button></div></div>}><CinematicIntro key={introKey} opened={opened} motion={motion} onComplete={finishIntro}/></Suspense>}
+    {<Suspense fallback={<div className="cinema-intro"><div className="cinema-footer"><p>За вас, со љубов</p><button onClick={finishIntro}>Прескокни го воведот ↗</button></div></div>}>{opened ? <CinematicIntro opened motion={motion} onComplete={finishIntro}/> : <LuxuryHook key={introKey} motion={motion} onComplete={finishIntro}/>}</Suspense>}
     <main aria-hidden={!opened} {...(!opened?{inert:''} as Record<string,string>:{})}>
       <section className="hero" id="home"><div className="hero-aura" aria-hidden="true"/><div className="hero-orbit" aria-hidden="true"/>
         <div className="hero-photo"><img src={data.photos.hero} alt="Романтична свадбена прослава во градина" fetchPriority="high"/></div><div className="hero-shade"/>
@@ -95,4 +95,4 @@ function Music(){
  }
  return <div className="music-control">{error&&<p className="music-error" role="status">{error}</p>}<button className={'music-button '+(playing?'is-playing':'')} onClick={toggle} aria-pressed={playing}><span className="equalizer" aria-hidden="true"><i/><i/><i/><i/></span>{playing?'Исклучи музика':'Вклучи музика'}</button></div>;
 }
-createRoot(document.getElementById('root')!).render(new URLSearchParams(location.search).has('hook')?<Suspense fallback={<div className="cinema-intro"/>}><LuxuryHook motion={!reduced()} onComplete={()=>{}}/></Suspense>:<App/>);
+createRoot(document.getElementById('root')!).render(new URLSearchParams(location.search).has('hook')?<Suspense fallback={<div className="cinema-intro"/>}><LuxuryHook motion={!reduced()}/></Suspense>:<App/>);
