@@ -53,14 +53,13 @@
 .wing-face.lining:before { background: linear-gradient(105deg,#c9b9a599,#f3e8daa1),var(--paper-image) 85% 48% / 380% auto,var(--ivory); }
 .atelier-sash {
   position: absolute; left: -.6%; top: 40.9%; width: 101.2%; aspect-ratio: 1752/897; pointer-events: none;
-  transform: translate3d(var(--band-x,0%),var(--band-y,0%),15px) rotate(var(--band-twist,0deg));
-  opacity: var(--band-opacity,1); transform-style: preserve-3d;
+  transform: translateZ(15px);
+  transform-style: preserve-3d;
 }
 .atelier-silk { position: absolute; inset: 0; transform: translateZ(3px); filter: drop-shadow(0 1px 1px #55402e70) drop-shadow(2px 7px 4px #4c332b55); }
-.atelier-silk img { width: 100%; height: auto; user-select: none; }
-.atelier-silk canvas { position: absolute; width: 108%; height: 108%; left: -4%; top: -4%; pointer-events: none; }
-.atelier-silk[data-mesh="true"] img { visibility: hidden; }
-.atelier-tag { position: absolute; top: 43%; left: 50%; width: 22%; height: 83%; transform-origin: 0 0; transform: rotate(calc(-13deg + var(--tag-swing, 0deg))); filter: drop-shadow(2px 3px 2px #59442d4a); }
+.atelier-silk img { width: 100%; height: auto; user-select: none; opacity: var(--silk-photo,1); }
+.atelier-silk canvas { position: absolute; pointer-events: none; }
+.atelier-tag { position: absolute; top: 43%; left: 50%; width: 22%; height: 83%; transform-origin: 0 0; transform: translate(var(--tag-x,0px),var(--tag-y,0px)) rotate(calc(-13deg + var(--tag-swing, 0deg))); filter: drop-shadow(2px 3px 2px #59442d4a); }
 .tag-cord { position: absolute; left: -3%; top: -1%; width: 9%; height: 46%; border: 1px solid #a08559; border-radius: 50%; transform: rotate(-6deg); }
 .tag-paper { display: grid; place-items: center; position: absolute; top: 39%; left: -50%; width: 100%; height: 61%; background: linear-gradient(135deg,#fff8,#fff7),var(--paper-image) 92% 50% / 370% auto,#f7efe4; clip-path: polygon(20% 0,80% 0,100% 19%,100% 100%,0 100%,0 19%); font: italic 5.3cqw/1 var(--serif); color: #795b47; padding-top: 10%; }
 .tag-paper i { position: absolute; top: 8%; width: 6%; aspect-ratio: 1; border-radius: 50%; background: #8e7557; box-shadow: 0 1px 1px #fff; }

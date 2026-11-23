@@ -4,7 +4,7 @@ for (const width of [390,1440]) test('the invitation waits for a guest before th
   await page.goto('/');
   await page.getByRole('button',{name:'Отвори ја поканата',exact:true}).click();
   const next = page.getByRole('button',{name:'Продолжи кон поканата',exact:true});
-  await expect(next).toBeVisible();
+  await expect(next).toBeVisible({timeout:10000});
   await page.clock.install();
   await page.clock.fastForward(60000);
   await expect(page.getByRole('dialog')).toBeVisible();

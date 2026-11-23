@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState, type PointerEvent} from 'react';
 import {invitation} from './data/invitation';
+import {mountSilk} from './silkRelief';
 import './luxury-hook.css';
 
 const silk = new URL('./assets/atelier/silk.webp', import.meta.url).href;
@@ -14,49 +15,52 @@ export default function LuxuryHook({motion, onComplete}: {motion: boolean; onCom
   const stage = useRef<HTMLDivElement>(null);
   const position = useRef(0);
   const frame = useRef(0);
-  const drag = useRef<{id: number; y: number; length: number; moved: boolean} | null>(null);
+  const drag = useRef<{id: number; x: number; y: number; length: number; moved: boolean} | null>(null);
   const ignoreClick = useRef(false);
   const openControl = useRef<HTMLButtonElement>(null);
   const nextControl = useRef<HTMLButtonElement>(null);
   const [phase, setPhase] = useState<Phase>('closed');
-  const [movingSilk, setMovingSilk] = useState(false);
+  const [canOpen, setCanOpen] = useState(false);
   const silkLayer = useRef<HTMLDivElement>(null);
+  const silkPhoto = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    let disposed = false;
+    const element = silkLayer.current, photo = silkPhoto.current;
+    if (!element || !photo) return;
     let release: (() => void) | undefined;
-    if (motion && silkLayer.current) {
-      const element = silkLayer.current;
-      import('./silkRelief').then(async ({mountSilk}) => {
-        if (disposed) return;
-        release = await mountSilk(element, silk, () => position.current, visible => {
-          if (!disposed) setMovingSilk(visible);
-        });
-        if (disposed) release?.();
-      }).catch(() => { /* The photographic silk remains visible without WebGL. */ });
+    function prepare() {
+      if (motion && element && photo && photo.naturalWidth && !release)
+        release = mountSilk(element, photo, () => position.current);
+      setCanOpen(true);
     }
-    return () => { disposed = true; release?.(); cancelAnimationFrame(frame.current); };
+    if (photo.complete) prepare();
+    else { photo.addEventListener('load',prepare); photo.addEventListener('error',prepare); }
+    return () => {
+      photo.removeEventListener('load',prepare); photo.removeEventListener('error',prepare);
+      release?.(); cancelAnimationFrame(frame.current);
+    };
   }, [motion]);
 
   function paint(value: number) {
     position.current = value;
     const node = stage.current;
     if (!node) return;
-    const band = easeAt(value, 0, .55);
-    const left = easeAt(value, .40, .88);
-    const right = easeAt(value, .52, .98);
-    const card = easeAt(value, .62, 1);
+    const unroll = easeAt(value,.34,.545);
+    const apart = easeAt(value,.475,.72);
+    const sweep = easeAt(value,.65,.92);
+    const left = easeAt(value,.735,.965);
+    const right = easeAt(value,.76,.985);
+    const card = easeAt(value,.78,1);
     const style = node.style;
-    style.setProperty('--band-y', band * 340 + '%');
-    style.setProperty('--band-x', (band * band * 51) + '%');
-    style.setProperty('--band-twist', band * 12 + 'deg');
-    style.setProperty('--band-opacity', String(1 - easeAt(value, .35, .55)));
-    style.setProperty('--tag-swing', Math.sin(band * Math.PI * 1.8) * -16 + 'deg');
+    style.setProperty('--silk-photo', value === 0 ? '1' : '0');
+    style.setProperty('--tag-x', (-198*apart-620*sweep)/690*100 + 'cqw');
+    style.setProperty('--tag-y', (3*apart+81*sweep)/690*100 + 'cqw');
+    style.setProperty('--tag-swing', (8*Math.sin(unroll*Math.PI)-24*apart+34*sweep) + 'deg');
     style.setProperty('--left-angle', -147 * left + 'deg');
     style.setProperty('--right-angle', 143 * right + 'deg');
     style.setProperty('--left-dark', String(Math.sin(left * Math.PI) * .29));
     style.setProperty('--right-dark', String(Math.sin(right * Math.PI) * .31));
-    style.setProperty('--tissue', String(1 - easeAt(value, .48, .80)));
+    style.setProperty('--tissue', String(1 - easeAt(value, .74, .88)));
     style.setProperty('--card-scale', String(1 + card * .035));
     style.setProperty('--stage-scale', String(1 - card * .12));
     style.setProperty('--card-depth', card * 17 + 'px');
@@ -75,7 +79,7 @@ export default function LuxuryHook({motion, onComplete}: {motion: boolean; onCom
     if (!motion || Math.abs(target - from) < .001) { finish(); return; }
     setPhase('moving');
     const start = performance.now();
-    const duration = (target ? 2600 : 1900) * Math.abs(target - from);
+    const duration = (target ? 4350 : 2600) * Math.abs(target - from);
     function draw(now: number) {
       const t = clamp((now - start) / duration);
       paint(from + (target - from) * t);
@@ -88,15 +92,16 @@ export default function LuxuryHook({motion, onComplete}: {motion: boolean; onCom
   function pointerDown(e: PointerEvent<HTMLButtonElement>) {
     if (e.button !== 0 || !e.isPrimary || phase !== 'closed') return;
     ignoreClick.current = false;
-    drag.current = {id: e.pointerId, y: e.clientY, length: Math.max(80, e.currentTarget.offsetWidth * .48), moved: false};
+    drag.current = {id: e.pointerId, x: e.clientX, y: e.clientY, length: Math.max(80, e.currentTarget.offsetWidth * .48), moved: false};
     e.currentTarget.setPointerCapture(e.pointerId);
   }
   function pointerMove(e: PointerEvent<HTMLButtonElement>) {
     const gesture = drag.current;
     if (!gesture || gesture.id !== e.pointerId || !motion) return;
-    const distance = e.clientY - gesture.y;
+    const dy = e.clientY - gesture.y, dx = e.clientX - gesture.x;
+    const distance = Math.max(dy, .78 * dy + .54 * dx);
     if (distance > 6) gesture.moved = true;
-    if (gesture.moved) paint(clamp(distance / gesture.length) * .53);
+    if (gesture.moved) paint(clamp(distance / gesture.length) * .59);
   }
   function pointerEnd(e: PointerEvent<HTMLButtonElement>, cancelled = false) {
     const gesture = drag.current;
@@ -137,11 +142,11 @@ export default function LuxuryHook({motion, onComplete}: {motion: boolean; onCom
         </div>)}
         <div className="atelier-sash" aria-hidden="true">
           <div className="atelier-tag"><span className="tag-cord"/><div className="tag-paper"><i/>За вас</div></div>
-          <div className="atelier-silk" data-mesh={movingSilk} ref={silkLayer}>
-            <img src={silk} alt="" draggable="false" fetchPriority="high"/>
+          <div className="atelier-silk" ref={silkLayer}>
+            <img ref={silkPhoto} src={silk} alt="" draggable="false" fetchPriority="high"/>
           </div>
         </div>
-        {phase === 'closed' && <button className="atelier-hit" aria-label="Отвори ја поканата" ref={openControl}
+        {phase === 'closed' && <button className="atelier-hit" disabled={!canOpen} aria-label="Отвори ја поканата" ref={openControl}
           onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={e => pointerEnd(e)}
           onPointerCancel={e => pointerEnd(e,true)} onClick={e => {
           if (!e.detail || !ignoreClick.current) settle(1);
@@ -150,7 +155,7 @@ export default function LuxuryHook({motion, onComplete}: {motion: boolean; onCom
       </div>
     </div>
     <footer className="atelier-actions">
-      {phase === 'closed' && <button onClick={() => settle(1)}>Допри ја панделката</button>}
+      {phase === 'closed' && <button disabled={!canOpen} onClick={() => settle(1)}>Повлечи го десниот крај надолу</button>}
       {phase === 'open' && <button ref={nextControl} onClick={() => onComplete ? onComplete() : settle(0)}>
         {onComplete ? 'Продолжи кон поканата' : 'Повтори го отворањето'}</button>}
     </footer>
