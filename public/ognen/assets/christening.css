@@ -1,0 +1,22 @@
+.atelier{--serif:Georgia,serif}
+.atelier-actions [hidden],.atelier.is-gone{display:none}
+.atelier.opening{pointer-events:none;animation:leave-atelier .75s ease both}
+@keyframes leave-atelier{to{opacity:0;transform:scale(1.025)}}
+.atelier-letter .letter-baby{width:80%;height:53%;object-fit:contain;filter:drop-shadow(0 6px 7px #84624924)}
+.atelier-letter h1{margin:1cqw;color:#705636}
+.atelier-letter p{margin:1cqw}
+.atelier-actions button{color:#48382f;background:#f8f1e4db}
+.portrait-stage{position:relative;isolation:isolate;width:min(390px,88vw);margin:16px auto 0;perspective:900px}
+.portrait-stage:before{content:"";position:absolute;inset:7% 12% 2%;z-index:-1;border:1px solid #cebd9673;border-radius:50% 50% 42% 42%;background:radial-gradient(ellipse,#f0e2ba55,transparent 70%)}
+.portrait-stage img{display:block;width:100%;height:auto;filter:drop-shadow(0 9px 8px #63553420);animation:portrait-breathe 7s ease-in-out infinite alternate}
+@keyframes portrait-breathe{to{transform:translateY(-4px) rotateY(2deg)}}
+.blessing{display:grid;grid-template-columns:minmax(190px,340px) minmax(240px,445px);justify-content:center;align-items:center;gap:clamp(24px,5vw,80px);padding:64px 6vw}
+.water-scene{position:relative;width:100%;margin:0;aspect-ratio:2/3;overflow:hidden;border-radius:48% 48% 5px 5px;box-shadow:0 15px 35px #4b40211f}
+.water-scene img{width:100%;height:100%;object-fit:fill;display:block}
+.water-drop{position:absolute;left:57.5%;top:46%;width:2.6%;aspect-ratio:.8;border-radius:52% 48% 55% 47%;background:radial-gradient(ellipse at 32% 23%,white 7%,#f9fbfaad 17%,#78644294 55%,#fff5c9cf 77%,#746349);box-shadow:0 1px 1px #56473566;animation:fall 3.6s linear infinite}
+@keyframes fall{0%,15%{opacity:0;transform:translateY(-1100%) scale(.45)}20%{opacity:.95}43%{opacity:1;transform:translateY(0) scale(.82,1.18)}44%,100%{opacity:0;transform:translateY(0)}}
+.impact{position:absolute;left:58.8%;top:47%;width:44%;height:8%;border-radius:50%;border:1px solid #fff5c9e6;box-shadow:0 1px 2px #695d40aa,inset 0 1px 1px #fff8cf;animation:ring 3.6s linear infinite}
+.ring-b{animation-delay:.15s;width:34%;height:6%}
+@keyframes ring{0%,42%{opacity:0;transform:translate(-50%,-50%) scale(.02)}44%{opacity:.95}84%,100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+@media(max-width:650px){.blessing{grid-template-columns:1fr;padding:44px 24px;gap:30px}.water-scene{width:min(80vw,295px);justify-self:center}.hero{padding-top:34px}.hero-cross{height:40px}.hero-name{font-size:clamp(72px,20vw,100px)}}
+@media(prefers-reduced-motion:reduce){.water-drop,.impact{animation:none;opacity:0}.portrait-stage img,.atelier.opening{animation:none}}

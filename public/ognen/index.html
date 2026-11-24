@@ -17,6 +17,10 @@
   
   
   <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/atelier.css">
+  <link rel="stylesheet" href="assets/christening.css">
+  <script src="assets/silk-motion.js" defer></script>
+  <script src="assets/envelope.js" defer></script>
   <script src="assets/config.js" defer></script>
   <script src="assets/app.js" defer></script>
 <meta property="og:image" content="https://mogliyow.github.io/elena-stefan-wedding/ognen/assets/baptism.webp"></head>
@@ -34,13 +38,21 @@
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 3"/></symbol>
   </svg>
 
-  <div id="cover" class="cover" role="dialog" aria-modal="true" aria-labelledby="coverTitle">
-    <div class="cover-art"><img src="assets/baptism.webp" alt="Капка вода над сребрен сад за крштевање и мало златно крстче" fetchpriority="high"></div>
-    <div class="cover-body"><p class="eyebrow">Светата крштевка на Огнен</p>
-      <h1 id="coverTitle">Мал благослов.<br><em>Голема радост.</em></h1>
-            <button class="primary-btn open-btn" id="openInvitation" type="button">Отвори ја поканата <span aria-hidden="true">✧</span></button>
-      <p class="cover-foot">18 ОКТОМВРИ 2026 · ПРИМЕР ПОКАНА</p>
-    </div>
+  <div id="cover" class="atelier" role="dialog" aria-modal="true" aria-label="Покана за крштевката на Огнен">
+    <div class="atelier-composition"><div class="atelier-object">
+      <div class="atelier-base"></div>
+      <article class="atelier-letter" aria-hidden="true"><div class="atelier-letter-frame">
+        <p class="atelier-overline">Света крштевка</p><h1>Огнен</h1>
+        <img class="letter-baby" src="assets/portrait.webp" alt="Портретот на Огнен од оригиналната покана">
+        <p class="atelier-date">18 · 10 · 2026</p>
+      </div></article>
+      <div class="atelier-tissue" aria-hidden="true"><span>Огнен</span></div>
+      <div class="atelier-wing wing-left"><div class="wing-face outside"></div><div class="wing-face lining"></div></div>
+      <div class="atelier-wing wing-right"><div class="wing-face outside"></div><div class="wing-face lining"></div></div>
+      <div class="atelier-sash" aria-hidden="true"><div class="atelier-tag"><span class="tag-cord"></span><div class="tag-paper"><i></i>За вас</div></div><div class="atelier-silk"><img src="assets/silk.webp" alt="" draggable="false" fetchpriority="high"></div></div>
+      <button class="atelier-hit" type="button" aria-label="Одврзи ја панделката"></button>
+    </div></div>
+    <div class="atelier-actions"><button type="button" id="untie">Повлечи го десниот крај надолу</button><button type="button" id="openInvitation" hidden>Продолжи кон поканата</button></div>
   </div>
 
   <div class="website" id="website" inert aria-hidden="true">
@@ -64,12 +76,12 @@
           <p class="hero-intro">Една мала душа, еден голем благослов.<br>Бидете со нас на овој светол ден.</p>
         </div>
 
-        <div class="inner-photo reveal"><img src="assets/baptism.webp" alt="Сребрен сад со осветена вода и маслиново гранче"></div>
+        <div class="portrait-stage reveal"><img src="assets/portrait.webp" width="800" height="800" alt="Огнен во мека бела прекривка, покрај крстилницата"></div>
         <p class="scroll-prompt">Погледнете ги деталите <span aria-hidden="true">↓</span></p>
       </section>
 
       <section class="blessing section decorated-section" aria-label="Покана">
-        <div class="text-container reveal"><div class="small-ornament">✝</div><p>Со неизмерна радост ве покануваме да бидете дел од еден посебен и благословен момент — <em>светата крштевка на нашиот Огнен.</em></p><div class="small-ornament bottom">✦</div></div>
+        <figure class="water-scene"><img src="assets/baptism.webp" width="1024" height="1536" loading="lazy" alt="Капка осветена вода паѓа во сребрената крстилница покрај бело пешкирче и златно крстче"><span class="water-drop"></span><span class="impact ring-a"></span><span class="impact ring-b"></span></figure><div class="text-container reveal"><div class="small-ornament">✝</div><p>Со неизмерна радост ве покануваме да бидете дел од еден посебен и благословен момент — <em>светата крштевка на нашиот Огнен.</em></p><div class="small-ornament bottom">✦</div></div>
       </section>
 
       <section class="event section decorated-section" aria-labelledby="eventTitle">
