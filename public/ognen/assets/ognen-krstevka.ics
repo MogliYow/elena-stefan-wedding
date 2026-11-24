@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Ognen Baptism Invitation//MK
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:ognen-krstevka-20261018-1200@example.invalid
+DTSTAMP:20261013T070000Z
+DTSTART:20261018T100000Z
+SUMMARY:Светата крштевка на Огнен
+LOCATION:Црква Свети Наум Охридски\, Радишани\, Скопје
+DESCRIPTION:Крштевка во 12:00 ч. Прослава од 14:00 часот: Кафана ДОМА\, Белимбегово.
+END:VEVENT
+END:VCALENDAR
