@@ -22,7 +22,7 @@
 @media(prefers-reduced-motion:reduce){.water-drop,.impact{animation:none;opacity:0}.portrait-stage img,.atelier.opening{animation:none}}
 
 /* The linen, paper and objects share one softly lit stage. */
-.atelier-silk{filter:grayscale(1) sepia(.65) saturate(1.55) hue-rotate(65deg) drop-shadow(1px 5px 3px #393d294f)}
+.atelier-silk{filter:grayscale(1) sepia(.78) saturate(1.75) hue-rotate(163deg) drop-shadow(1px 5px 3px #393d294f)}
 .cover-toy{position:absolute;pointer-events:none;filter:drop-shadow(4px 9px 5px #55503938);width:min(19vw,205px);bottom:13%;z-index:-1}
 .bear-toy{left:max(2%,calc(50% - 465px));transform:rotate(-9deg)}
 .car-toy{right:max(2%,calc(50% - 490px));transform:rotate(7deg);bottom:16%}
