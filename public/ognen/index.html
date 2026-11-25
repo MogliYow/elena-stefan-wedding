@@ -29,7 +29,7 @@
     <symbol id="i-cross" viewBox="0 0 60 75"><path d="M25 8h10v16h16v10H35v32H25V34H9V24h16Z" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="m30 2 2 3M4 29l-3 1M56 29l3 1M15 7l-3-4M46 7l3-4M15 57l-5 9M45 57l5 9" fill="none" stroke="currentColor" stroke-width="1.2"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 5.5-8 12-8 12S4 15.5 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
     <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/></symbol>
-    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.9c-2.2-2.2-5.7-2.2-7.9 0L12 5.8l-.9-.9a5.6 5.6 0 0 0-7.9 7.1 7.1 0 0 0 0 10L12 23l8.8-8.1a7.1 7.1 0 0 0 0-10Z"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5 3.9 12.8C-.5 8.4 5.5 2.2 10 6.3L12 8.2l2-1.9c4.5-4.1 10.5 2.1 6.1 6.5Z"/></symbol>
     <symbol id="i-send" viewBox="0 0 24 24"><path d="m21 3-9.4 18-2.3-8.3L1 10.4 21 3Zm0 0L9.3 12.7"/></symbol>
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V3m0 0L7.3 7.7M12 3l4.7 4.7M5 13v7h14v-7"/></symbol>
     <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 17V5l11-2v12M9 10l11-2"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></symbol>
@@ -64,7 +64,7 @@
       </div>
     </header>
 
-    <main><div class="gold-thread" aria-hidden="true"></div>
+    <main><div class="gold-thread" aria-hidden="true"></div><img class="thread-rider" src="assets/roadster.webp" alt="">
       <section class="hero section" id="pochetok" aria-labelledby="heroTitle">
         <div class="hero-halo" aria-hidden="true"></div>
         
@@ -85,7 +85,7 @@
       </section>
 
       <section class="event section decorated-section" aria-labelledby="eventTitle">
-        <img class="side-car" src="assets/roadster.webp" alt=""><div class="section-heading reveal"><span class="section-kicker">ДЕТАЛИ <span class="keep-lower">за</span></span><h2 id="eventTitle">Нашиот посебен ден</h2><div class="decor-divider"><span>✧</span></div></div>
+        <div class="section-heading reveal"><span class="section-kicker">ДЕТАЛИ <span class="keep-lower">за</span></span><h2 id="eventTitle">Нашиот посебен ден</h2><div class="decor-divider"><span>✧</span></div></div>
         <div class="event-card date-card reveal">
           <div class="card-icon"><svg><use href="#i-calendar"/></svg></div>
           <div class="card-content"><p class="card-tag">КОГА?</p><h3>Недела, 18 октомври 2026</h3><p class="card-sub">Почеток во <strong>12:00 часот</strong></p><a href="assets/ognen-krstevka.ics" download="Ognen-Krstevka.ics" class="text-action" id="calendarButton"><svg><use href="#i-calendar"/></svg> Додај во календар <span>↗</span></a></div>
@@ -120,5 +120,5 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <audio id="invitationAudio" src="assets/playtime.mp3" loop preload="none"></audio>
   <noscript><p style="padding:20px;text-align:center;font-family:sans-serif">За интерактивното отворање на поканата, вклучете JavaScript во прелистувачот.</p></noscript>
-<script src="assets/depth.js"></script></body>
+<script src="assets/thread.js"></script><script src="assets/depth.js"></script></body>
 </html>

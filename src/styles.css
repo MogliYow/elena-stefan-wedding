@@ -26,3 +26,5 @@
 }
 @media(max-height:540px) and (orientation:landscape){.intro-top{padding-top:8px;padding-bottom:8px}.envelope-stage{width:min(55vw,62svh);margin-top:0}.intro-bottom{padding-top:10px;padding-bottom:10px}.intro-couple{font-size:22px}.intro-line{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+.wedding-keepsakes{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:32px auto 10px}
+.wedding-keepsakes .button{color:#603f42;background:#fff9f2;border:1px solid #c59c96;border-radius:3px;min-height:44px}
