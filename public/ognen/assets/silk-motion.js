@@ -26,7 +26,7 @@ var OgnenSilk = (() => {
   const marginX = 220;
   const marginY = 42;
   const canvasWidth = width + 2 * marginX;
-  const canvasHeight = height + marginY + 225;
+  const canvasHeight = height + marginY + 510;
   function ease(p, a, b) {
     const t = Math.max(0, Math.min(1, (p - a) / (b - a)));
     return t * t * (3 - 2 * t);
@@ -76,7 +76,7 @@ var OgnenSilk = (() => {
       leftLoop: ease(p, 0.237, 0.463),
       unroll: ease(p, 0.34, 0.545),
       apart: ease(p, 0.475, 0.72),
-      sweep: ease(p, 0.65, 0.92)
+      sweep: 0, landing: ease(p, .515, .87)
     };
   }
   function station(kind, x, y, k) {
@@ -248,10 +248,15 @@ var OgnenSilk = (() => {
         d = tip;
       }
       const f = 1 - t;
-      return point(
+      const held = point(
         f * f * f * a.x + 3 * f * f * t * b.x + 3 * f * t * t * c.x + t * t * t * d.x,
         f * f * f * a.y + 3 * f * f * t * b.y + 3 * f * t * t * c.y + t * t * t * d.y
       );
+      // The centre lands first. The two ends follow it onto the linen.
+      const fall = Math.min(1, k.landing * (1.16 - .16*u));
+      const floorX = 327 + sign*(318*u + 29*Math.sin(2*Math.PI*u));
+      const floorY = 681 + 28*Math.sin(u*Math.PI*2.4 + (rightTip ? .45 : 0))*u;
+      return point(held.x+(floorX-held.x)*fall, held.y+(floorY-held.y)*fall*fall);
     };
     const sections = 76;
     const centres = [], upper = [], lower = [];
@@ -261,7 +266,7 @@ var OgnenSilk = (() => {
       const len = Math.hypot(after.x - before.x, after.y - before.y);
       const tx = (after.x - before.x) / len, ty = (after.y - before.y) / len;
       const twist = Math.sin((u - 0.33) * 10 + flutter * 0.5) * ease(u, 0.03, 0.4);
-      const breadth = (72 - 28 * Math.exp(-((u - 0.45) ** 2) / 8e-3)) * (1 - 0.34 * twist * twist);
+      const breadth = (1-.68*k.landing) * (72 - 28 * Math.exp(-((u - 0.45) ** 2) / 8e-3)) * (1 - 0.34 * twist * twist);
       const slant = ease(u, 0.83, 1) * 0.42;
       const vx = (-ty * sign + slant * tx) * breadth / 2, vy = (tx * sign + slant * ty) * breadth / 2;
       centres.push(centre);
@@ -303,20 +308,20 @@ var OgnenSilk = (() => {
       ctx.setTransform(canvas.width / canvasWidth, 0, 0, canvas.height / canvasHeight, 0, 0);
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       const p = progress();
-      if (p >= 0.92 || p <= 0) return;
+      if (p <= 0) return;
       ctx.translate(marginX, marginY);
       ctx.imageSmoothingEnabled = true;
       const k = pose(p);
       const loose = ease(p, 0.411, 0.524);
       if (loose > 0) {
-        ctx.globalAlpha = loose * (1 - ease(p, 0.84, 0.92));
+        ctx.globalAlpha = loose;
         drawLooseStrand(ctx, weave, false, k);
         drawLooseStrand(ctx, weave, true, k);
       }
       for (const section of cloth) {
         const wrap = section.piece.endsWith("Wrap");
         if (loose >= 1 && !wrap) continue;
-        ctx.globalAlpha = wrap ? 1 : 1 - loose;
+        ctx.globalAlpha = wrap ? 1 - ease(p,.47,.56) : 1 - loose;
         drawCloth(ctx, section, k);
       }
       ctx.globalAlpha = 1;

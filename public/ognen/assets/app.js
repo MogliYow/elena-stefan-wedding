@@ -17,16 +17,17 @@ function initInvitation() {
   // Анимиран плик; при прилагоден reduced motion не се чека непотребно.
   const cover = $('#cover');
   const content = $('#website');
-  const openButton = $('#openInvitation');
+  cover.addEventListener('ribbon-pulled', () => startMusic(), {once:true});
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let opened = false;
-  openButton.addEventListener('click', () => {
+  cover.addEventListener('ribbon-landed', () => {
     if (opened) return;
     opened = true;
-    openButton.disabled = true;
+
     // Стартувај го звукот директно од корисничкиот клик, пред анимацијата.
     // Прелистувачите го блокираат autoplay без интеракција.
-    startMusic();
+    content.removeAttribute('aria-hidden'); content.inert=false;
+    updateReveal();
     cover.classList.add('opening');
     setTimeout(() => {
       content.removeAttribute('aria-hidden'); content.inert = false;
