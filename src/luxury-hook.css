@@ -56,7 +56,7 @@
   transform: translateZ(15px);
   transform-style: preserve-3d;
 }
-.atelier-silk { position: absolute; inset: 0; transform: translateZ(3px); filter: drop-shadow(0 1px 1px #55402e70) drop-shadow(2px 7px 4px #4c332b55); }
+.atelier-silk { position: absolute; inset: 0; transform: translateZ(3px); filter: grayscale(1) sepia(.22) brightness(1.19) drop-shadow(0 1px 1px #55402e70) drop-shadow(2px 7px 4px #4c332b55); }
 .atelier-silk img { width: 100%; height: auto; user-select: none; opacity: var(--silk-photo,1); }
 .atelier-silk canvas { position: absolute; pointer-events: none; }
 .atelier-tag { position: absolute; top: 43%; left: 50%; width: 22%; height: 83%; transform-origin: 0 0; transform: translate(var(--tag-x,0px),var(--tag-y,0px)) rotate(calc(-13deg + var(--tag-swing, 0deg))); filter: drop-shadow(2px 3px 2px #59442d4a); }

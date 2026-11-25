@@ -3,12 +3,12 @@ export const invitation = {
   date: '2027-06-12T17:00:00+02:00', dateLabel: '12 јуни 2027', deadline: '1 јуни 2027',
   venue: { name: 'Скопје', address: 'Локација за демонстрација', maps: 'https://www.google.com/maps/search/?api=1&query=Skopje' },
   photos: {
-    hero: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2000&q=85',
-    portrait: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=900&q=85',
+    hero: './wedding/ceremony.webp',
+    portrait: './wedding/portrait.webp',
     gallery: [
-      'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=800&q=85',
-      'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=85',
-      'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=85'
+      './wedding/bouquet.webp',
+      './wedding/rings.webp',
+      './wedding/table.webp'
     ]
   },
   timeline: [

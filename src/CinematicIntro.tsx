@@ -11,13 +11,13 @@ const segment=(t:number,a:number,b:number)=>ease((t-a)/(b-a));
 function texture(kind:'paper'|'satin'|'velvet'|'liner'|'card'|'monogram'){
  const c=document.createElement('canvas'); c.width=1024;c.height=1024;const x=c.getContext('2d')!;
  let seed=312;const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
- x.fillStyle=kind==='velvet'?'#36423b':kind==='satin'?'#d4bea0':'#f5f0e6';x.fillRect(0,0,1024,1024);
+ x.fillStyle=kind==='velvet'?'#d4c8b7':kind==='satin'?'#d4bea0':'#f5f0e6';x.fillRect(0,0,1024,1024);
  for(let i=0;i<85000;i++){const a=rand()*1024,b=rand()*1024;x.fillStyle=rand()>.5?'rgba(255,255,255,.12)':'rgba(69,49,26,.16)';x.fillRect(a,b,kind==='satin'?1:rand()*2+.3,kind==='velvet'?3:1);}
  if(kind==='satin'){for(let i=0;i<1024;i+=2){x.fillStyle=i%4?'#ffffff0b':'#3f2c1a0a';x.fillRect(0,i,1024,1);}}
  if(kind==='liner'){
-  x.strokeStyle='#78806b';x.lineWidth=1.2;
+  x.strokeStyle='#ad9c83';x.lineWidth=1.2;
   for(let j=0;j<9;j++){x.save();x.translate((j%3)*360-40,Math.floor(j/3)*370);x.rotate(-.35+j*.07);x.beginPath();x.moveTo(0,320);x.bezierCurveTo(90,200,25,120,160,0);x.stroke();
-   for(let k=0;k<6;k++){const y=280-k*45,xx=35+k*15;x.fillStyle=k%2?'#87917e80':'#6b7b614a';x.beginPath();x.ellipse(xx-24,y-20,13,36,-.7,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(xx+18,y-36,12,32,.8,0,Math.PI*2);x.fill();}x.restore();}
+   for(let k=0;k<6;k++){const y=280-k*45,xx=35+k*15;x.fillStyle=k%2?'#d0c1aa80':'#b2a2894a';x.beginPath();x.ellipse(xx-24,y-20,13,36,-.7,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(xx+18,y-36,12,32,.8,0,Math.PI*2);x.fill();}x.restore();}
  }
  if(kind==='card'||kind==='monogram'){
   x.textAlign='center';x.fillStyle='#8d734a';x.font='italic 80px Georgia';x.fillText('Е & С',512,kind==='card'?220:560);
@@ -60,7 +60,7 @@ export default function CinematicIntro({motion,onComplete,opened=false}:{motion:
   const paper=new THREE.MeshStandardMaterial({map:textures[0],bumpMap:textures[0],bumpScale:.035,color:0xe8ddca,roughness:.88});
   const liner=new THREE.MeshStandardMaterial({map:textures[3],roughness:.95,side:THREE.DoubleSide});
   const satin=new THREE.MeshPhysicalMaterial({map:textures[1],bumpMap:textures[1],bumpScale:.018,color:0xf0e1cc,metalness:0,roughness:.46,sheen:1,sheenColor:new THREE.Color(0xffebcc),sheenRoughness:.35,side:THREE.DoubleSide});
-  const velvet=new THREE.MeshPhysicalMaterial({map:textures[2],bumpMap:textures[2],bumpScale:.035,color:0x708579,roughness:.93,sheen:1,sheenColor:new THREE.Color(0x9aaa8d),sheenRoughness:.8});
+  const velvet=new THREE.MeshPhysicalMaterial({map:textures[2],bumpMap:textures[2],bumpScale:.035,color:0xe6ded0,roughness:.93,sheen:1,sheenColor:new THREE.Color(0xfff9ee),sheenRoughness:.8});
   const gold=new THREE.MeshStandardMaterial({color:0xd6ad61,metalness:1,roughness:.19,envMapIntensity:1.5});
   const diamond=new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:.04,transmission:.3,thickness:.2,ior:2.4,envMapIntensity:2.8});
   const mats:THREE.Material[]=[paper,liner,satin,velvet,gold,diamond];
@@ -113,7 +113,7 @@ export default function CinematicIntro({motion,onComplete,opened=false}:{motion:
   mesh(rounded(3.1,.7,2.25,.16),velvet,boxScene,0,-.53,0);
   const trim=mesh(rounded(3.12,.045,2.27,.05),gold,boxScene,0,-.24,0);
   const pad=mesh(rounded(2.85,.18,2.02,.1),velvet,boxScene,0,-.18,0);
-  const seamMat=new THREE.MeshStandardMaterial({color:0x28352c,roughness:1});mats.push(seamMat);mesh(rounded(2.3,.012,.045,.006),seamMat,boxScene,0,-.083,.15);
+  const seamMat=new THREE.MeshStandardMaterial({color:0x938575,roughness:1});mats.push(seamMat);mesh(rounded(2.3,.012,.045,.006),seamMat,boxScene,0,-.083,.15);
   const lid=new THREE.Group();lid.position.set(0,-.18,-1.03);boxScene.add(lid);
   mesh(rounded(3.1,.32,2.25,.14),velvet,lid,0,.05,1.03);mesh(rounded(2.84,.035,2.0,.08),velvet,lid,0,-.13,1.03);
   const lidMonogramMat=new THREE.MeshStandardMaterial({color:0xd0b681,metalness:.7,roughness:.4});mats.push(lidMonogramMat);
