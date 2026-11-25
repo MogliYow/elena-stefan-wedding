@@ -53,3 +53,6 @@ main{position:relative;isolation:isolate;overflow:hidden;background:linear-gradi
 .event-card .card-icon svg{fill:var(--ink);stroke:var(--outline);filter:drop-shadow(0 1px 0 #fff);stroke-width:1.45}
 @media(max-width:650px){.thread-rider{width:25px}}
 @media(prefers-reduced-motion:reduce){.thread-rider{display:none}}
+.website main{background:linear-gradient(110deg,#fffaf177,#eff4e75e),url('surface.webp') center top/cover fixed}
+.website .hero,.website .blessing,.website .event,.website .rsvp-section,.website .closing{background:transparent}
+@media(max-width:700px){.website main{background-size:auto,auto 100svh;background-attachment:scroll}}

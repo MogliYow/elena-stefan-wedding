@@ -37,9 +37,20 @@ export default function CinematicIntro({motion,onComplete,opened=false}:{motion:
  // Opening never navigates away: the guest chooses when to continue.
  useEffect(()=>()=>timers.current.forEach(clearTimeout),[]);
  useEffect(()=>{
+  if(!opened)return;
+  const root=host.current?.parentElement;
+  const sync=()=>{
+   const progress=Math.min(1,scrollY/Math.max(1,innerHeight*.8));
+   root?.style.setProperty('--ring-travel',String(progress));
+   root?.style.setProperty('--ring-descent',String(Math.min(1,scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight))));
+  };
+  sync();window.addEventListener('scroll',sync,{passive:true});window.addEventListener('resize',sync);
+  return()=>{window.removeEventListener('scroll',sync);window.removeEventListener('resize',sync);};
+ },[opened]);
+ useEffect(()=>{
   const el=host.current!;let renderer:THREE.WebGLRenderer;
   try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});}catch{setRenderMode('fallback');return;}
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xf1ede4,1);renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0xf1ede4,opened?0:1);renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.93;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   el.appendChild(renderer.domElement);setRenderMode('webgl');
   const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(34,1,.1,50);
@@ -118,11 +129,12 @@ export default function CinematicIntro({motion,onComplete,opened=false}:{motion:
   const petalMat=new THREE.MeshPhysicalMaterial({color:0xfff5e8,roughness:.65,side:THREE.DoubleSide,sheen:.7,sheenColor:new THREE.Color(0xffffff)});mats.push(petalMat);
   for(let k=0;k<18;k++){const a=k*2.4,r=k<6?.18:k<12?.37:.56;const g=new THREE.SphereGeometry(1,18,12,0,Math.PI*2,0,Math.PI*.67);g.scale(.24,.36,.065);const p=mesh(g,petalMat,flower,Math.cos(a)*r,Math.sin(a)*r,k<6?.2:.05);p.rotation.set(.3*Math.cos(a),.3*Math.sin(a),a-Math.PI/2);}
   for(let k=0;k<9;k++){const a=k*2.4;mesh(new THREE.SphereGeometry(.025,8,8),gold,flower,Math.cos(a)*.13,Math.sin(a)*.13,.28);}
+  const showStarted=performance.now();
   let frame=0,px=0,py=0,last=0,dirty=true;
   const resize=()=>{const w=el.clientWidth,h=el.clientHeight;camera.aspect=w/h;camera.position.z=Math.max(10,3.2/(Math.tan(THREE.MathUtils.degToRad(17))*camera.aspect));camera.updateProjectionMatrix();renderer.setSize(Math.min(w,1200),Math.min(w,1200)/w*h,false);dirty=true;};
   const move=(e:PointerEvent)=>{px=(e.clientX/innerWidth-.5);py=(e.clientY/innerHeight-.5);dirty=true;};
   const draw=(now:number)=>{
-   frame=requestAnimationFrame(draw);if(now-last<40)return;last=now;if((started.current===null||now-started.current>8000)&&!dirty)return;dirty=false;
+   frame=requestAnimationFrame(draw);if(now-last<40)return;last=now;if(!opened&&(started.current===null||now-started.current>8000)&&!dirty)return;dirty=false;
    const t=started.current===null?0:(now-started.current)/1000;
    const untie=segment(t,.1,1.25),lift=segment(t,1,2.3),pull=segment(t,1.8,3.0),out=segment(t,2.9,3.7),reveal=segment(t,3.3,4.5);
    envelope.rotation.y=-.1+px*.055;envelope.rotation.x=-.09+py*.035;envelope.position.set(-out*12,-out*1.4,0);envelope.visible=t<3.7;
@@ -131,17 +143,43 @@ export default function CinematicIntro({motion,onComplete,opened=false}:{motion:
    knot.scale.setScalar(1-untie*.95);tag.position.y=-.65-untie*.7;bands.scale.x=1+untie*.5;bow.visible=t<2.5;
    backdrop.position.z=-.7-reveal*2.8;softShadow.position.set(.2,-.2-reveal*1.3,-.35-reveal*2.6);softShadow.scale.set(1-reveal*.2,1-reveal*.6,1);boxScene.visible=t>3.25;boxScene.scale.setScalar((.65+reveal*.35)*(camera.aspect<.8?1.2:.78));boxScene.position.set((1-reveal)*2,-.35,0);boxScene.rotation.y=-.2+px*.08+(1-reveal)*.35;
    lid.rotation.x=-segment(t,3.7,5)*1.85;
+   if(opened){
+    backdrop.visible=false;softShadow.visible=false;
+    const halfY=camera.position.z*Math.tan(THREE.MathUtils.degToRad(17));
+    const halfX=halfY*camera.aspect;
+    const distance=window.scrollY/Math.max(1,innerHeight);
+    const depart=motion?segment(distance,0,.8):0;
+    const page=Math.min(1,window.scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight));
+    const elapsed=Math.max(0,(now-showStarted)/1000);
+    const rise=motion?segment(elapsed,.25,2.1):0;
+    const angle=motion?Math.max(0,elapsed-.9)*.83+page*3*Math.PI:0;
+    boxScene.position.y-=distance*2*halfY;
+    boxScene.visible=distance<1.3;
+    // Keep the same two meshes throughout the lift, orbit and scroll.
+    if(ringGroup.parent!==scene)scene.attach(ringGroup);
+    const boxScale=boxScene.scale.x;
+    ringGroup.scale.setScalar(boxScale*(1-.48*depart));
+    ringGroup.position.set(halfX*(.88*depart),-.15+rise*.84-(motion?0:distance*2*halfY)-halfY*depart*(.12+page*.74),.22);
+    ringGroup.rotation.set(.19,0,0);
+    for(const [index,band] of [wedding,engagement].entries()){
+      const side=index===0?-1:1;
+      band.position.set(side*.55*Math.cos(angle),side*.13*Math.sin(angle),side*.47*Math.sin(angle));
+      band.rotation.y=side*.14+.5*Math.sin(angle);
+    }
+    ringGroup.visible=motion || distance<1.3;
+   }
    key.position.x=-3+segment(t,4.8,7.2)*2;
    renderer.render(scene,camera);
   };
   const lost=(e:Event)=>{e.preventDefault();setRenderMode('fallback');cancelAnimationFrame(frame);};
   resize();frame=requestAnimationFrame(draw);window.addEventListener('resize',resize);window.addEventListener('pointermove',move,{passive:true});renderer.domElement.addEventListener('webglcontextlost',lost);
   return()=>{cancelAnimationFrame(frame);window.removeEventListener('resize',resize);window.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('webglcontextlost',lost);scene.traverse(o=>{if(o instanceof THREE.Mesh)o.geometry.dispose();});mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());env.dispose();pmrem.dispose();room.dispose();renderer.dispose();renderer.domElement.remove();};
- },[]);
+ },[opened,motion]);
  return <div className={'cinema-intro cinema-'+phase+' cinema-render-'+renderMode+(opened?' cinema-inline':'')} role={opened?'region':'dialog'} aria-modal={opened?undefined:true} aria-label="Отворете ја свадбената покана">
   <div className="cinema-canvas" ref={host} aria-hidden="true"/>
   <div className="cinema-vignette"/>
-  {renderMode!=='webgl'&&<div className="cinema-fallback" aria-hidden="true"><div className="fallback-envelope"><div className="fallback-flap"/><div className="fallback-band"/><div className="fallback-bow"><i/><i/><b/></div><span>Е & С</span></div><div className="fallback-jewels"><div className="fallback-box-lid">Е & С</div><div className="fallback-box"><i/><i/><b>✧</b></div></div></div>}
+  {renderMode!=='webgl'&&<div className="cinema-fallback" aria-hidden="true"><div className="fallback-envelope"><div className="fallback-flap"/><div className="fallback-band"/><div className="fallback-bow"><i/><i/><b/></div><span>Е & С</span></div><div className="fallback-jewels"><div className="fallback-box-lid">Е & С</div><div className="fallback-box">{!opened&&<><i/><i/><b>✧</b></>}</div></div></div>}
+  {opened&&renderMode==='fallback'&&<div className="floating-bands" aria-hidden="true"><span/><span/></div>}
   <header className="cinema-header"><span>ЕДНА ПРИКАЗНА. ЗАСЕКОГАШ.</span><button onClick={finish}>Прескокни го воведот </button></header>
   <div className="cinema-ring-title" aria-hidden={phase!=='rings'}><span>ДВЕ СРЦА. ЕДНО ВЕТУВАЊЕ.</span><h2>Елена <em>&</em> Стефан</h2><p>12 јуни 2027</p></div>
   {phase==='sealed'&&<button className="cinema-open" onClick={open} aria-label="Отвори ја поканата"><span className="sr-only">Допрете ја панделката</span></button>}

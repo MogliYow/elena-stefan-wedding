@@ -8,7 +8,7 @@ const height = 353;
 const marginX = 220;
 const marginY = 42;
 const canvasWidth = width + 2 * marginX;
-const canvasHeight = height + marginY + 225;
+const canvasHeight = height + marginY + 510;
 
 function ease(p: number, a: number, b: number) {
   const t = Math.max(0, Math.min(1, (p - a) / (b - a)));
@@ -60,7 +60,7 @@ function pose(p: number) {
     leftLoop: ease(p,.237,.463),
     unroll: ease(p,.34,.545),
     apart: ease(p,.475,.72),
-    sweep: ease(p,.65,.92)
+    sweep: 0, landing: ease(p,.515,.87)
   };
 }
 
@@ -221,8 +221,12 @@ function drawLooseStrand(ctx: CanvasRenderingContext2D, weave: HTMLCanvasElement
       c=point(hemX-sign*(49-flutter*10),hemY-21); d=tip;
     }
     const f=1-t;
-    return point(f*f*f*a.x+3*f*f*t*b.x+3*f*t*t*c.x+t*t*t*d.x,
+    const held = point(f*f*f*a.x+3*f*f*t*b.x+3*f*t*t*c.x+t*t*t*d.x,
                  f*f*f*a.y+3*f*f*t*b.y+3*f*t*t*c.y+t*t*t*d.y);
+    const fall = Math.min(1,k.landing*(1.16-.16*u));
+    const floorX = 327+sign*(318*u+29*Math.sin(2*Math.PI*u));
+    const floorY = 681+28*Math.sin(u*Math.PI*2.4+(rightTip?.45:0))*u;
+    return point(held.x+(floorX-held.x)*fall,held.y+(floorY-held.y)*fall*fall);
   };
   const sections=76;
   const centres: Point[]=[], upper: Point[]=[], lower: Point[]=[];
@@ -232,7 +236,7 @@ function drawLooseStrand(ctx: CanvasRenderingContext2D, weave: HTMLCanvasElement
     const len=Math.hypot(after.x-before.x,after.y-before.y);
     const tx=(after.x-before.x)/len, ty=(after.y-before.y)/len;
     const twist=Math.sin((u-.33)*10+flutter*.5)*ease(u,.03,.4);
-    const breadth=(72-28*Math.exp(-((u-.45)**2)/.008))*(1-.34*twist*twist);
+    const breadth=(1-.68*k.landing)*(72-28*Math.exp(-((u-.45)**2)/.008))*(1-.34*twist*twist);
     const slant=ease(u,.83,1)*.42;
     const vx=(-ty*sign+slant*tx)*breadth/2, vy=(tx*sign+slant*ty)*breadth/2;
     centres.push(centre); upper.push(point(centre.x-vx,centre.y-vy)); lower.push(point(centre.x+vx,centre.y+vy));
@@ -273,20 +277,20 @@ export function mountSilk(host: HTMLElement, image: HTMLImageElement, progress: 
     ctx.setTransform(canvas.width/canvasWidth,0,0,canvas.height/canvasHeight,0,0);
     ctx.clearRect(0,0,canvasWidth,canvasHeight);
     const p = progress();
-    if (p >= .92 || p <= 0) return;
+    if (p <= 0) return;
     ctx.translate(marginX,marginY);
     ctx.imageSmoothingEnabled = true;
     const k = pose(p);
     const loose = ease(p,.411,.524);
     if (loose > 0) {
-      ctx.globalAlpha = loose*(1-ease(p,.84,.92));
+      ctx.globalAlpha = loose;
       drawLooseStrand(ctx,weave,false,k);
       drawLooseStrand(ctx,weave,true,k);
     }
     for (const section of cloth) {
       const wrap = section.piece.endsWith('Wrap');
       if (loose >= 1 && !wrap) continue;
-      ctx.globalAlpha = wrap ? 1 : 1-loose;
+      ctx.globalAlpha = wrap ? 1-ease(p,.47,.56) : 1-loose;
       drawCloth(ctx,section,k);
     }
     ctx.globalAlpha = 1;

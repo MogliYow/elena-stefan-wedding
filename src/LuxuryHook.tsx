@@ -53,8 +53,8 @@ export default function LuxuryHook({motion, onComplete}: {motion: boolean; onCom
     const card = easeAt(value,.78,1);
     const style = node.style;
     style.setProperty('--silk-photo', value === 0 ? '1' : '0');
-    style.setProperty('--tag-x', (-198*apart-620*sweep)/690*100 + 'cqw');
-    style.setProperty('--tag-y', (3*apart+81*sweep)/690*100 + 'cqw');
+    style.setProperty('--tag-x', (-75*apart-90*sweep)/690*100 + 'cqw');
+    style.setProperty('--tag-y', (30*apart+478*sweep)/690*100 + 'cqw');
     style.setProperty('--tag-swing', (8*Math.sin(unroll*Math.PI)-24*apart+34*sweep) + 'deg');
     style.setProperty('--left-angle', -147 * left + 'deg');
     style.setProperty('--right-angle', 143 * right + 'deg');

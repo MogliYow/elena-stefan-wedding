@@ -54,7 +54,7 @@ test('each loop feeds into the knot before the paper moves', async ({page}) => {
     return canvas.evaluate((element,[x,y]) => {
       const c = element as HTMLCanvasElement;
       const context = c.getContext('2d')!;
-      const px = Math.floor((220+x)*c.width/1130), py = Math.floor((42+y)*c.height/620);
+      const px = Math.floor((220+x)*c.width/1130), py = Math.floor((42+y)*c.height/905);
       const data = context.getImageData(px-2,py-2,5,5).data;
       let sum=0;
       for(let i=3;i<data.length;i+=4) sum+=data[i];
