@@ -28,3 +28,5 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 .wedding-keepsakes{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:32px auto 10px}
 .wedding-keepsakes .button{color:#603f42;background:#fff9f2;border:1px solid #c59c96;border-radius:3px;min-height:44px}
+
+.gallery-item .gallery-image img.wedding-hands{filter:saturate(1.14) hue-rotate(-4deg) brightness(1.04)}

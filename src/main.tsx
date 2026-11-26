@@ -54,7 +54,7 @@ function App(){
       <section className="welcome section-pad" id="welcome"><Sprig className="welcome-sprig"/><div className="welcome-copy reveal"><span className="section-index">Со љубов</span><p className="eyebrow">Драги наши</p><h2><KineticText>Најубавите моменти<br/>се споделуваат.</KineticText></h2><p className="body-copy">Со радост во срцата ве покануваме да бидете дел од денот кога нашите две приказни ќе станат една. Вашето присуство ќе биде најубавиот подарок.</p><p className="italic-note">Да создадеме спомени што траат.</p><div className="event-details"><div><p className="eyebrow">Кога</p><h3><KineticText>Сабота, 12 јуни</KineticText></h3><p>2027 <span className="detail-divider">/</span> 17:00 часот</p></div><div><p className="eyebrow">Каде</p><h3><KineticText>Скопје</KineticText></h3><p>Свадбена прослава</p></div></div></div></section>
       <section className="story section-pad"><div className="story-portrait reveal"><div className="portrait-orbit"/><div className="photo-arch"><img src={data.photos.portrait} loading="lazy" alt="Младенци во романтична прегратка"/></div><span className="portrait-caption">Секогаш ти.</span></div><div className="story-copy reveal"><p className="eyebrow">Нашата приказна</p><h2><KineticText>Од една насмевка,<br/>до едно засекогаш.</KineticText></h2><p className="body-copy">Меѓу сите случајности, ние се најдовме. Во малите нешта, долгите разговори и обичните денови ја препознавме нашата најголема среќа.</p><blockquote>„Најубавото место на светот<br/>е покрај тебе.“</blockquote></div></section>
       <section className="day section-pad" id="day"><div className="section-heading reveal"><p className="eyebrow">Моменти што ќе ги паметиме</p><h2><KineticText>Еден ден. Цела љубов.</KineticText></h2></div><ol className="timeline">{data.timeline.map(item=><li className="timeline-item reveal" key={item.time}><time>{item.time}</time><span className="timeline-dot"/><div><h3><KineticText>{item.title}</KineticText></h3><p>{item.text}</p></div></li>)}</ol></section>
-      <section className="gallery-section section-pad"><div className="section-heading reveal"><p className="eyebrow">Парчиња од нашето засекогаш</p><h2><KineticText>Љубов, во секој кадар.</KineticText></h2></div><div className="gallery">{data.photos.gallery.map((src,i)=><figure className="gallery-item reveal" key={src}><div className="gallery-image"><img src={src} loading="lazy" alt={['Свадбени цветови и нежни детали','Споени раце со бурми','Свадбена маса со бели свеќи и лен'][i]}/></div><figcaption>{['Малите нешта.','Нашето сè.','Убавината на моментот.'][i]}</figcaption></figure>)}</div></section>
+      <section className="gallery-section section-pad"><div className="section-heading reveal"><p className="eyebrow">Парчиња од нашето засекогаш</p><h2><KineticText>Љубов, во секој кадар.</KineticText></h2></div><div className="gallery">{data.photos.gallery.map((src,i)=><figure className="gallery-item reveal" key={src}><div className="gallery-image"><img className={src.endsWith("/rings.webp") ? "wedding-hands" : undefined} src={src} loading="lazy" alt={['Свадбени цветови и нежни детали','Споени раце со бурми','Свадбена маса со бели свеќи и лен'][i]}/></div><figcaption>{['Малите нешта.','Нашето сè.','Убавината на моментот.'][i]}</figcaption></figure>)}</div></section>
       <section className="dress-code section-pad"><Sprig className="dress-sprig"/><div className="reveal"><p className="eyebrow">Малку инспирација</p><h2><KineticText>Елеганција, по твој избор.</KineticText></h2><p className="body-copy">Нежни тонови, природни материјали и вашата најубава насмевка. Оваа палета е само инспирација — најважно е да се чувствувате убаво.</p><div className="colour-palette" aria-label="Бела, слонова коска, крем и беж">{['#fffdfa','#eee8dc','#dbcfbb','#b7a58d'].map(c=><span key={c} style={{background:c}}/>)}</div></div></section>
       <Countdown/>
       <section className="location section-pad" id="location"><figure className="church-photo reveal"><img src="./wedding-church.webp" alt="Акварелна илустрација на црква со камени ѕидови и зеленило" loading="lazy"/><figcaption>Таму каде што ќе кажеме „да“.</figcaption></figure><div className="location-copy reveal"><p className="eyebrow">Сите патишта водат до нас</p><h2><KineticText>Се гледаме<br/>во Скопје.</KineticText></h2><p className="body-copy">Еден посебен ден, во друштво на нашите најблиски. Со нетрпение ја очекуваме секоја прегратка.</p><a className="button button-outline" href={data.venue.maps} target="_blank" rel="noopener noreferrer">Отвори во Google Maps <span>↗</span></a><p className="location-note">Пример покана · Скопје</p></div></section>
@@ -88,20 +88,15 @@ function RSVP(){
 }
 function Music(){
  const [playing,setPlaying]=useState(false),[error,setError]=useState('');
- const audio=useRef<AudioContext|null>(null),timer=useRef<number|undefined>();
- const position=useRef(0);
- const stop=()=>{if(timer.current)clearInterval(timer.current);timer.current=undefined;void audio.current?.suspend();setPlaying(false);};
- useEffect(()=>()=>{if(timer.current)clearInterval(timer.current);void audio.current?.close();},[]);
+ const audio=useRef<HTMLAudioElement>(null);
  async function toggle(){
-   if(playing){stop();return;}
-   try{
-     if(!audio.current)audio.current=new AudioContext();
-     const ctx=audio.current;await ctx.resume();setError('');
-     const notes=[261.63,329.63,392,523.25,440,349.23,293.66,392];
-     const play=()=>{const osc=ctx.createOscillator();const gain=ctx.createGain();osc.type='sine';osc.frequency.value=notes[position.current++%notes.length];const t=ctx.currentTime;gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(.045,t+.04);gain.gain.exponentialRampToValueAtTime(.001,t+2.6);osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+2.7);osc.onended=()=>{osc.disconnect();gain.disconnect();};};
-     play();timer.current=window.setInterval(play,740);setPlaying(true);
-   }catch{setError('Звукот не е достапен во овој прелистувач.');}
+   const track=audio.current;
+   if(!track)return;
+   if(!track.paused){track.pause();return;}
+   setError('');
+   try{await track.play();}
+   catch{setError('Музиката не се вчита. Обидете се повторно.');}
  }
- return <div className="music-control">{error&&<p className="music-error" role="status">{error}</p>}<button className={'music-button '+(playing?'is-playing':'')} onClick={toggle} aria-pressed={playing}><span className="equalizer" aria-hidden="true"><i/><i/><i/><i/></span>{playing?'Исклучи музика':'Вклучи музика'}</button></div>;
+ return <div className="music-control"><audio ref={audio} src="./wedding/wedding-dance.mp3" loop preload="none" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)}/>{error&&<p className="music-error" role="status">{error}</p>}<button className={'music-button '+(playing?'is-playing':'')} onClick={toggle} aria-pressed={playing}><span className="equalizer" aria-hidden="true"><i/><i/><i/><i/></span>{playing?'Исклучи музика':'Вклучи музика'}</button></div>;
 }
 createRoot(document.getElementById('root')!).render(new URLSearchParams(location.search).has('hook')?<Suspense fallback={<div className="cinema-intro"/>}><LuxuryHook motion={!reduced()}/></Suspense>:<App/>);
