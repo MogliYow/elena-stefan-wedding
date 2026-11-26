@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+ <linearGradient id="ribbon" x2=".4" y2="1"><stop stop-color="#fff0f6"/><stop offset=".27" stop-color="#e88eb0"/><stop offset=".63" stop-color="#c75b89"/><stop offset="1" stop-color="#f4b1c8"/></linearGradient>
+ <pattern id="dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="1.6" fill="#fff7ed"/></pattern>
+ <path id="wings" d="M45 26Q19 0 15 9Q6 29 15 44Q21 51 45 33Q68 52 76 44Q84 29 77 10Q71 1 49 25Z"/>
+ <symbol id="bow" viewBox="0 0 92 56"><use xlink:href="#wings" fill="url(#ribbon)" stroke="#b26083" stroke-width="2"/><use xlink:href="#wings" fill="url(#dots)"/><path d="M19 20Q34 21 43 27M53 28Q65 19 74 19M20 36Q34 28 41 29" fill="none" stroke="#b16b85" stroke-width="2"/><rect x="40" y="20" width="13" height="19" rx="5" fill="#de91ae" stroke="#a76182"/></symbol>
+ <g id="mouse">
+  <path d="M18 116Q21 94 49 93T83 116" fill="currentColor" stroke="#744759" stroke-width="2"/>
+  <path d="M36 97q4 12 14 5q9 9 14-5" fill="#fff9ed"/>
+  <g fill="#302634"><circle cx="20" cy="34" r="18"/><circle cx="80" cy="34" r="18"/><ellipse cx="50" cy="68" rx="35" ry="36"/></g>
+  <path d="M21 79Q14 66 25 61Q27 39 41 44Q47 45 50 53Q57 40 67 45Q79 49 77 63Q90 68 80 83Q71 99 50 99Q31 99 21 79Z" fill="#ffe2c8"/>
+  <g fill="#fffaf2" stroke="#49323a" stroke-width="1.2"><ellipse cx="42" cy="65" rx="5" ry="11"/><ellipse cx="56" cy="65" rx="5" ry="11"/></g>
+  <g fill="#332832"><ellipse cx="44" cy="69" rx="2.6" ry="5"/><ellipse cx="55" cy="69" rx="2.6" ry="5"/><ellipse cx="50" cy="78" rx="7" ry="4.5"/></g>
+  <path d="M32 81Q47 93 68 80Q52 108 37 88Z" fill="#703b48"/><path d="M43 91q7-6 15-2q-7 7-15 2" fill="#ed9da3"/><path d="m39 55-3-4m7 4-2-6m15 6 2-6m1 7 4-5" stroke="#34262b" stroke-width="1.8"/>
+ </g>
+ <symbol id="minnie" viewBox="0 0 100 120"><use xlink:href="#mouse" color="#e18aab"/><use xlink:href="#bow" x="18" y="7" width="64" height="41"/></symbol>
+ <symbol id="millie" viewBox="0 0 100 120"><use xlink:href="#mouse" color="#d8a3c8"/><g transform="rotate(-14 40 38)"><use xlink:href="#bow" x="14" y="14" width="49" height="29"/></g><circle cx="38" cy="83" r="1" fill="#b67a68"/><circle cx="34" cy="82" r="1" fill="#b67a68"/></symbol>
+ <symbol id="melody" viewBox="0 0 100 120"><use xlink:href="#mouse" color="#eea698"/><g transform="rotate(16 63 36)"><use xlink:href="#bow" x="43" y="14" width="49" height="29"/></g></symbol>
+ <symbol id="daisy" viewBox="0 0 100 120">
+  <path d="M15 116Q23 92 50 94T85 116" fill="#b49bd3"/><path d="M28 89Q13 78 22 59Q18 36 45 32Q67 22 76 46Q86 56 80 72Q87 90 64 97Q39 105 28 89Z" fill="#fffdf7" stroke="#baabba" stroke-width="2"/>
+  <g fill="#fff" stroke="#65546e" stroke-width="1.8"><ellipse cx="40" cy="63" rx="8" ry="14"/><ellipse cx="59" cy="61" rx="8" ry="14"/></g><path d="M32 60q7-20 16-2m3 0q9-21 16-2" fill="#c8a1cd"/><path d="m33 53-4-5m8 3-2-6m26 6 2-6m1 7 5-5" stroke="#55445a" stroke-width="1.8"/>
+  <g fill="#403140"><ellipse cx="43" cy="67" rx="3" ry="6"/><ellipse cx="57" cy="66" rx="3" ry="6"/></g><path d="M25 76Q33 69 44 75Q56 76 67 70Q76 67 78 73Q70 84 54 89Q40 95 33 83Z" fill="#f5b454" stroke="#c58b40" stroke-width="2"/><path d="M32 79q18 9 39-3" fill="none" stroke="#a7713e" stroke-width="2"/><use xlink:href="#bow" x="21" y="6" width="66" height="40"/></symbol>
+ <symbol id="bird" viewBox="0 0 100 120"><g stroke="#947358" stroke-width="4" fill="none"><path d="m71 82 13 3"/><circle cx="88" cy="80" r="4"/><circle cx="88" cy="89" r="4"/></g><path d="M33 67Q12 65 14 47q11 15 22 9Q25 36 48 35Q74 29 73 58Q81 81 64 92Q43 101 31 86L18 88Z" fill="#ffdc58" stroke="#c9974b" stroke-width="2"/><path d="M37 72q12 15 23-1-14 7-23 1" fill="#edac47"/><ellipse cx="61" cy="52" rx="4" ry="6" fill="#342d39"/><path d="m70 55 13 4-13 6" fill="#f49546"/><path d="m45 94-3 8m15-8 2 8" stroke="#ba7e48" stroke-width="3"/><use xlink:href="#bow" x="27" y="20" width="41" height="25"/></symbol>
+</defs></svg>
