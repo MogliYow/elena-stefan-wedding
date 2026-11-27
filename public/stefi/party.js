@@ -27,10 +27,11 @@ for (const flame of flames) {
     flame.disabled = true;
     flame.parentElement.classList.add('out');
     if (flames.some(b => !b.disabled)) {
-      status.textContent = 'Уште едно пламенче за роденденската желба!';
+      status.textContent = 'Мини шепнува: „Уште едно пламенче!“';
       flames.find(b => !b.disabled).focus({preventScroll:true});
       return;
     }
+    document.querySelector('.scene').classList.add('hooray');
     status.textContent = 'Среќен втор роденден, Стефи!';
     el('again').hidden = false;
     el('again').focus({preventScroll:true});
@@ -44,9 +45,10 @@ for (const flame of flames) {
   };
 }
 el('again').onclick = () => {
+  document.querySelector('.scene').classList.remove('hooray');
   flames.forEach(b=>{b.disabled=false;b.parentElement.classList.remove('out');});
   el('confetti').replaceChildren();
-  status.textContent='Замисли желба и допри ги двете пламенчиња!';
+  status.textContent='Помогни ѝ на Стефи: замисли желба и допри ги пламенчињата!';
   el('again').hidden=true;
   flames[0].focus({preventScroll:true});
 };
